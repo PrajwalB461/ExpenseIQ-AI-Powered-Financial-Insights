@@ -1,7 +1,84 @@
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300..900;1,9..144,300..900&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=IBM+Plex+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap');
 @import "tailwindcss";
+
+@theme {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-rule: var(--rule);
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-accent-brass: var(--accent-brass);
+  --color-ink-red: var(--ink-red);
+  --color-ink-green: var(--ink-green);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+
+  --font-display: "Fraunces", Georgia, serif;
+  --font-sans: "IBM Plex Sans", sans-serif;
+  --font-mono: "IBM Plex Mono", monospace;
+  --font-serif: "Fraunces", Georgia, serif;
+}
+
+:root, [data-theme="ledger-day"] {
+  --bg: #F5F7F2;
+  --surface: #FFFFFF;
+  --ink: #1C2620;
+  --ink-muted: #5B6B60;
+  --rule: #D8E0D3;
+  --brand: #1F4D3A;
+  --brand-hover: #17392B;
+  --accent-brass: #A8863C;
+  --ink-red: #A13D2B;
+  --ink-green: #2F7A4D;
+  --warning: #C97F1E;
+  --danger: #8C2F22;
+}
+
+[data-theme="ledger-night"] {
+  --bg: #0E1613;
+  --surface: #16211C;
+  --ink: #EDEFE9;
+  --ink-muted: #9AAA9F;
+  --rule: #2A3830;
+  --brand: #4C8A6A;
+  --brand-hover: #6FA383;
+  --accent-brass: #C9A227;
+  --ink-red: #D2665A;
+  --ink-green: #6FCF97;
+  --warning: #E0A339;
+  --danger: #C0453A;
+}
 
 @layer base {
   body {
-    @apply bg-slate-900 text-white min-h-screen font-sans;
+    background-color: var(--bg);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", sans-serif;
+    min-height: 100vh;
+    margin: 0;
+    transition: background-color 0.1s ease, color 0.1s ease, border-color 0.1s ease;
   }
+  
+  /* Apply focus visible ring styling globally on all interactive elements */
+  a:focus-visible,
+  button:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--accent-brass) !important;
+    outline-offset: 2.5px !important;
+  }
+}
+
+/* Custom CSS Helpers */
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  font-family: "IBM Plex Mono", monospace;
+}
+
+/* Transition utility */
+.theme-transition {
+  transition: all 0.15s ease-in-out;
 }

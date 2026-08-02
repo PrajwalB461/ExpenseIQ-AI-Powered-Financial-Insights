@@ -8,10 +8,7 @@ import {
   Calendar, 
   Filter, 
   Tag, 
-  Search, 
-  ArrowUpRight,
   Info,
-  DollarSign,
   AlertTriangle
 } from 'lucide-react';
 import { 
@@ -24,21 +21,18 @@ import {
   ResponsiveContainer,
   PieChart,
   Pie,
-  Cell,
-  Legend,
-  BarChart,
-  Bar
+  Cell
 } from 'recharts';
 import API from '../api';
+import LedgerCard from '../components/LedgerCard';
 
 const COLORS = [
-  '#a78bfa', // violet-400
-  '#22d3ee', // cyan-400
-  '#f472b6', // pink-400
-  '#fbbf24', // amber-400
-  '#34d399', // emerald-400
-  '#f87171', // red-400
-  '#60a5fa'  // blue-400
+  'var(--brand)',
+  'var(--accent-brass)',
+  'var(--ink-green)',
+  'var(--warning)',
+  'var(--ink-red)',
+  'var(--danger)'
 ];
 
 const Dashboard = () => {
@@ -57,8 +51,8 @@ const Dashboard = () => {
   const [insightsLoading, setInsightsLoading] = useState(true);
   const [error, setError] = useState('');
   
-  // Filters State
-  const [preset, setPreset] = useState('this-month'); // this-month | last-month | this-year | custom
+  // Filters presets
+  const [preset, setPreset] = useState('this-month');
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [categoryId, setCategoryId] = useState('');
@@ -92,7 +86,6 @@ const Dashboard = () => {
     }
   }, [preset]);
 
-  // Fetch baseline categories for filters
   useEffect(() => {
     const fetchCategories = async () => {
       try {
@@ -101,13 +94,12 @@ const Dashboard = () => {
           setCategories(res.data.data);
         }
       } catch (err) {
-        console.error('Failed to load categories catalog:', err);
+        console.error('Failed to load categories:', err);
       }
     };
     fetchCategories();
   }, []);
 
-  // Fetch overview data and insights
   const fetchDashboardData = async () => {
     if (!fromDate || !toDate) return;
     
@@ -118,7 +110,6 @@ const Dashboard = () => {
     const query = `?from=${fromDate}&to=${toDate}${categoryId ? `&categoryId=${categoryId}` : ''}`;
 
     try {
-      // Parallel get overview + insights
       const [overviewRes, insightsRes] = await Promise.all([
         API.get(`/dashboard/overview${query}`),
         API.get(`/dashboard/insights${query}`)
@@ -131,7 +122,7 @@ const Dashboard = () => {
         setInsights(insightsRes.data.data);
       }
     } catch (err) {
-      setError(err.response?.data?.message || 'Failed to fetch dashboard metrics data.');
+      setError(err.response?.data?.message || 'Failed to fetch dashboard metrics.');
     } finally {
       setLoading(false);
       setInsightsLoading(false);
@@ -142,11 +133,10 @@ const Dashboard = () => {
     fetchDashboardData();
   }, [fromDate, toDate, categoryId]);
 
-  // Trigger export
   const handleExport = async () => {
     try {
       const query = `?from=${fromDate}&to=${toDate}${categoryId ? `&categoryId=${categoryId}` : ''}`;
-      const res = await API.get(`/dashboard/export${query}`, {
+      const res = await API.get(`/backup/export${query}`, {
         responseType: 'blob'
       });
       
@@ -155,27 +145,24 @@ const Dashboard = () => {
       
       const link = document.createElement('a');
       link.href = url;
-      link.setAttribute('download', `FinIntel_Finance_Report_${fromDate}_to_${toDate}.xlsx`);
+      link.setAttribute('download', `Ledger_Backup_${fromDate}_to_${toDate}.xlsx`);
       document.body.appendChild(link);
       link.click();
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (err) {
       console.error('Excel report exportation failed:', err);
-      alert('Failed to construct and download Excel report.');
+      alert('Failed to construct and download Excel workbook backup.');
     }
   };
 
-  // Indian Rupee custom formatter
   const formatINR = (val) => {
     return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      minimumFractionDigits: 2
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
     }).format(val);
   };
 
-  // Custom Tick Date label formater
   const formatTrendTick = (label) => {
     if (!label) return '';
     const date = new Date(label);
@@ -184,46 +171,36 @@ const Dashboard = () => {
   };
 
   return (
-    <div className="space-y-8 animate-fade-in text-xs font-semibold text-slate-350">
+    <div className="space-y-6 text-xs text-ink font-semibold">
       
-      {/* Financial Welcome Deck Header Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-violet-900/60 to-indigo-900/60 p-6 border border-violet-850 bg-slate-900/40 shadow-xl">
-        <div className="absolute -top-12 -right-12 h-44 w-44 rounded-full bg-violet-600/20 blur-2xl"></div>
-        <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
+      {/* Welcome Banner */}
+      <LedgerCard className="relative overflow-hidden">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div>
-            <h1 className="text-xl font-black text-white">Financial Intelligence Control Center</h1>
-            <p className="mt-1 text-slate-300">
-              Welcome back to your active asset center. Analyze historical cashflows, generate rule-based savings insights, or download full details.
+            <h1 className="font-serif font-display text-2xl font-bold tracking-tight text-ink">General Ledger Balance</h1>
+            <p className="mt-1 text-ink-muted">
+              Verify book entries, audit monthly categories, and generate strategic bookkeeping insights for the period.
             </p>
           </div>
           <button 
             onClick={handleExport}
-            className="flex items-center justify-center gap-2 rounded-xl bg-violet-650 hover:bg-violet-600 text-white px-5 py-2.5 font-bold transition-all bg-violet-600 cursor-pointer shadow-lg shadow-violet-950/20"
+            className="flex items-center justify-center gap-2 rounded bg-brand hover:bg-brand-hover text-white px-5 py-2.5 font-bold transition-all cursor-pointer shadow-xs outline-none"
           >
             <Download className="h-4 w-4" />
-            Export to Excel
+            Export Ledger Workbook
           </button>
         </div>
-      </div>
+      </LedgerCard>
 
       {/* FILTER BAR PRESSETS */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-5 shadow-xl space-y-4">
-        <div className="flex justify-between items-center">
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-violet-400" />
-            <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Asset Filter Panel</span>
-          </div>
-          <span className="text-[9px] text-slate-500 uppercase tracking-widest font-bold">Showing Real-Time Dynamic Indicators</span>
-        </div>
-
-        <div className="grid gap-4 sm:grid-cols-4">
-          {/* Preset Buttons */}
+      <LedgerCard title="Audit Filter Panel" subtitle="Configure Reporting Constraints">
+        <div className="grid gap-4 sm:grid-cols-4 items-end pt-2">
           <div>
-            <label className="text-[9px] uppercase text-slate-400 block mb-1">Time Preset Range</label>
+            <label className="text-[9px] uppercase text-ink-muted block mb-1.5 font-bold">Reporting Frequency</label>
             <select
               value={preset}
               onChange={(e) => setPreset(e.target.value)}
-              className="w-full rounded-lg border border-slate-800 bg-slate-950 px-3 py-2 text-white focus:outline-none focus:border-violet-500 bg-slate-950 appearance-none font-semibold cursor-pointer"
+              className="w-full h-9 rounded border border-rule bg-surface px-3 text-xs text-ink focus:outline-none focus:border-brand font-semibold cursor-pointer"
             >
               <option value="this-month">This Month</option>
               <option value="last-month">Last Month</option>
@@ -232,131 +209,121 @@ const Dashboard = () => {
             </select>
           </div>
 
-          {/* From Date Inputs */}
           <div>
-            <label className="text-[9px] uppercase text-slate-400 block mb-1">Start Date</label>
+            <label className="text-[9px] uppercase text-ink-muted block mb-1.5 font-bold">Start Date</label>
             <input
               type="date"
               value={fromDate}
               disabled={preset !== 'custom'}
               onChange={(e) => setFromDate(e.target.value)}
-              className="w-full rounded-lg border border-slate-800 bg-slate-950 px-3 py-2 text-white focus:outline-none focus:border-violet-500 font-semibold disabled:opacity-40"
+              className="w-full h-9 rounded border border-rule bg-surface px-3 text-xs text-ink focus:outline-none focus:border-brand font-semibold disabled:opacity-40"
             />
           </div>
 
-          {/* To Date Inputs */}
           <div>
-            <label className="text-[9px] uppercase text-slate-400 block mb-1">End Date</label>
+            <label className="text-[9px] uppercase text-ink-muted block mb-1.5 font-bold">End Date</label>
             <input
               type="date"
               value={toDate}
               disabled={preset !== 'custom'}
               onChange={(e) => setToDate(e.target.value)}
-              className="w-full rounded-lg border border-slate-800 bg-slate-950 px-3 py-2 text-white focus:outline-none focus:border-violet-500 font-semibold disabled:opacity-40"
+              className="w-full h-9 rounded border border-rule bg-surface px-3 text-xs text-ink focus:outline-none focus:border-brand font-semibold disabled:opacity-40"
             />
           </div>
 
-          {/* Category Filter dropdown */}
           <div>
-            <label className="text-[9px] uppercase text-slate-400 block mb-1">Category Classification</label>
+            <label className="text-[9px] uppercase text-ink-muted block mb-1.5 font-bold">Category Account Filter</label>
             <select
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
-              className="w-full rounded-lg border border-slate-800 bg-slate-950 px-3 py-2 text-white focus:outline-none focus:border-violet-500 bg-slate-950 appearance-none font-semibold cursor-pointer"
+              className="w-full h-9 rounded border border-rule bg-surface px-3 text-xs text-ink focus:outline-none focus:border-brand font-semibold cursor-pointer font-sans"
             >
               <option value="">All Categories</option>
               {categories.map((cat) => (
-                <option key={cat._id} value={cat._id}>{cat.name} ({cat.type === 'income' ? 'Inflow' : 'Outflow'})</option>
+                <option key={cat._id} value={cat._id}>{cat.name} ({cat.type === 'income' ? 'Debit' : 'Credit'})</option>
               ))}
             </select>
           </div>
         </div>
-      </div>
+      </LedgerCard>
 
       {error && (
-        <div className="flex items-center gap-2 rounded-xl border border-red-500/25 bg-red-500/10 p-4 text-red-400">
-          <AlertTriangle className="h-4.5 w-4.5 animate-bounce" />
+        <div className="flex items-center gap-2 rounded border border-danger/20 bg-danger/5 p-4 text-ink-red">
+          <AlertTriangle className="h-4 w-4" />
           <span>{error}</span>
         </div>
       )}
 
-      {/* KPI SCARY CARDS */}
-      <div className="grid gap-6 sm:grid-cols-3">
+      {/* KPI STAT CARDS */}
+      <div className="grid gap-6 sm:grid-cols-3 items-stretch">
         {/* Total Income Inflow Card */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-5 shadow-xl flex flex-col justify-between hover:border-violet-500/35 transition-all">
-          <div className="flex items-center justify-between">
-            <span className="text-[9px] uppercase font-bold text-slate-500 tracking-wider">Consolidated Income</span>
-            <span className="h-6 w-6 rounded bg-emerald-500/10 flex items-center justify-center text-emerald-400 border border-emerald-500/20">
+        <LedgerCard className="h-full flex flex-col justify-between">
+          <div className="flex items-start justify-between min-h-[32px] gap-2">
+            <span className="text-[9px] uppercase font-bold text-ink-muted tracking-wider leading-tight line-clamp-2">Debit (Total Income)</span>
+            <span className="h-6 w-6 rounded bg-ink-green/10 flex items-center justify-center text-ink-green border border-ink-green/20 shrink-0">
               <TrendingUp className="h-3.5 w-3.5" />
             </span>
           </div>
-          <div className="mt-4">
-            <span className="text-2xl font-black text-emerald-450 block text-emerald-400">
-              {loading ? '₹--' : formatINR(data.totalIncome)}
+          <div className="flex-1 flex flex-col justify-end mt-4 border-t border-rule pt-3">
+            <span className="text-xl font-bold font-mono text-ink-green tabular-nums text-right w-full block">
+              {loading ? '₹--' : `₹${formatINR(data.totalIncome)}`}
             </span>
-            <p className="text-[8px] text-slate-500 mt-1 uppercase font-bold">Total earnings mapped to assets</p>
           </div>
-        </div>
+        </LedgerCard>
 
         {/* Total Expense Outflow Card */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-5 shadow-xl flex flex-col justify-between hover:border-violet-500/35 transition-all">
-          <div className="flex items-center justify-between">
-            <span className="text-[9px] uppercase font-bold text-slate-500 tracking-wider">Consolidated Deficit</span>
-            <span className="h-6 w-6 rounded bg-rose-500/10 flex items-center justify-center text-rose-455 text-rose-450 border border-rose-500/20">
+        <LedgerCard className="h-full flex flex-col justify-between">
+          <div className="flex items-start justify-between min-h-[32px] gap-2">
+            <span className="text-[9px] uppercase font-bold text-ink-muted tracking-wider leading-tight line-clamp-2">Credit (Total Expenses)</span>
+            <span className="h-6 w-6 rounded bg-ink-red/10 flex items-center justify-center text-ink-red border border-ink-red/20 shrink-0">
               <TrendingDown className="h-3.5 w-3.5" />
             </span>
           </div>
-          <div className="mt-4">
-            <span className="text-2xl font-black text-rose-400 block">
-              {loading ? '₹--' : formatINR(data.totalExpense)}
+          <div className="flex-1 flex flex-col justify-end mt-4 border-t border-rule pt-3">
+            <span className="text-xl font-bold font-mono text-ink-red tabular-nums text-right w-full block">
+              {loading ? '₹--' : `₹${formatINR(data.totalExpense)}`}
             </span>
-            <p className="text-[8px] text-slate-500 mt-1 uppercase font-bold">Total spend decumulations</p>
           </div>
-        </div>
+        </LedgerCard>
 
         {/* Net Savings Card */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-5 shadow-xl flex flex-col justify-between hover:border-violet-500/35 transition-all">
-          <div className="flex items-center justify-between">
-            <span className="text-[9px] uppercase font-bold text-slate-500 tracking-wider">Net Surplus / Savings</span>
-            <span className="h-6 w-6 rounded bg-blue-500/10 flex items-center justify-center text-blue-400 border border-blue-500/20">
+        <LedgerCard className="h-full flex flex-col justify-between">
+          <div className="flex items-start justify-between min-h-[32px] gap-2">
+            <span className="text-[9px] uppercase font-bold text-ink-muted tracking-wider leading-tight line-clamp-2">Net Balance Surplus</span>
+            <span className="h-6 w-6 rounded bg-accent-brass/10 flex items-center justify-center text-accent-brass border border-accent-brass/20 shrink-0">
               <Wallet className="h-3.5 w-3.5" />
             </span>
           </div>
-          <div className="mt-4">
-            <span className={`text-2xl font-black block ${data.netSavings >= 0 ? 'text-violet-405 text-violet-400' : 'text-amber-500'}`}>
-              {loading ? '₹--' : formatINR(data.netSavings)}
+          <div className="flex-1 flex flex-col justify-end mt-4 border-t border-rule pt-3">
+            <span className={`text-xl font-bold font-mono w-full text-right tabular-nums block ${data.netSavings >= 0 ? 'text-ink-green' : 'text-ink-red'}`}>
+              {loading ? '₹--' : `${data.netSavings >= 0 ? '+' : ''}₹${formatINR(data.netSavings)}`}
             </span>
-            <p className="text-[8px] text-slate-500 mt-1 uppercase font-bold">Inflows subtracted by outflows</p>
           </div>
-        </div>
+        </LedgerCard>
       </div>
 
       {/* CHART PANEL LAYOUT GRID */}
       <div className="grid gap-6 lg:grid-cols-2">
         {/* Trend Area Lines Chart */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 shadow-xl space-y-4">
-          <div>
-            <h3 className="text-sm font-bold text-white">Daily Outflow Trend Chart</h3>
-            <p className="text-[9px] text-slate-550 text-slate-500 uppercase tracking-wider font-bold">Tracking transactional volume changes over timeline</p>
-          </div>
-          <div className="h-72 w-full">
+        <LedgerCard title="Daily Outflow Account Trend">
+          <div className="h-72 w-full pt-4">
             {loading ? (
               <div className="h-full flex justify-center items-center">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-violet-500/25 border-t-violet-500" />
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-brand border-t-transparent" />
               </div>
             ) : data.spendTrend && data.spendTrend.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
                 <AreaChart data={data.spendTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="spendColor" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#f43f5e" stopOpacity={0.25}/>
-                      <stop offset="95%" stopColor="#f43f5e" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="var(--ink-red)" stopOpacity={0.25}/>
+                      <stop offset="95%" stopColor="var(--ink-red)" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" opacity={0.15} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="var(--rule)" opacity={0.4} />
                   <XAxis 
                     dataKey="date" 
-                    stroke="#475569" 
+                    stroke="var(--ink-muted)" 
                     fontSize={9} 
                     tickFormatter={formatTrendTick}
                     fontWeight="bold"
@@ -364,7 +331,7 @@ const Dashboard = () => {
                     axisLine={false} 
                   />
                   <YAxis 
-                    stroke="#475569" 
+                    stroke="var(--ink-muted)" 
                     fontSize={10} 
                     fontWeight="bold"
                     tickLine={false} 
@@ -372,45 +339,41 @@ const Dashboard = () => {
                   />
                   <Tooltip 
                     contentStyle={{ 
-                      backgroundColor: '#090d16', 
-                      borderColor: '#1e293b', 
-                      borderRadius: '12px',
-                      color: '#cbd5e1',
+                      backgroundColor: 'var(--surface)', 
+                      borderColor: 'var(--rule)', 
+                      borderRadius: '6px',
+                      color: 'var(--ink)',
                       fontSize: '11px',
                       fontWeight: 'bold'
                     }} 
-                    formatter={(value) => [`₹${value.toLocaleString('en-IN')}`, 'Spends']}
+                    formatter={(value) => [`₹${value.toLocaleString('en-IN')}`, 'Debit Amount']}
                     labelFormatter={formatTrendTick}
                   />
                   <Area 
                     type="monotone" 
                     dataKey="amount" 
-                    stroke="#f43f5e" 
-                    strokeWidth={2.5} 
+                    stroke="var(--ink-red)" 
+                    strokeWidth={2} 
                     fillOpacity={1} 
                     fill="url(#spendColor)" 
                   />
                 </AreaChart>
               </ResponsiveContainer>
             ) : (
-              <div className="h-full flex flex-col justify-center items-center border border-dashed border-slate-800 rounded-xl bg-slate-950/10">
-                <Calendar className="h-8 w-8 text-slate-650 text-slate-600 mb-2" />
-                <span className="text-xs text-slate-500 font-medium">No trend metrics log data matches selection.</span>
+              <div className="h-full flex flex-col justify-center items-center border border-dashed border-rule rounded bg-surface/10">
+                <Calendar className="h-6 w-6 text-ink-muted mb-2" />
+                <span className="text-xs text-ink-muted font-medium">No trend metrics matches current period filters parameter.</span>
               </div>
             )}
           </div>
-        </div>
+        </LedgerCard>
 
         {/* Categorical Distribution Pie Chart */}
-        <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 shadow-xl space-y-4">
-          <div>
-            <h3 className="text-sm font-bold text-white">Spend Breakdown by Category</h3>
-            <p className="text-[9px] text-slate-500 uppercase tracking-wider font-bold">Relative percentage splits of outflow distributions</p>
-          </div>
-          <div className="h-72 w-full flex flex-col sm:flex-row items-center justify-center gap-4">
+        <LedgerCard title="Outflow Breakdown by Account Code">
+          <div className="h-72 w-full flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             {loading ? (
               <div className="h-full flex justify-center items-center">
-                <div className="h-8 w-8 animate-spin rounded-full border-4 border-violet-500/25 border-t-violet-500" />
+                <div className="h-6 w-6 animate-spin rounded-full border-2 border-brand border-t-transparent" />
               </div>
             ) : data.spendByCategory && data.spendByCategory.length > 0 ? (
               <>
@@ -423,9 +386,9 @@ const Dashboard = () => {
                         nameKey="category"
                         cx="50%"
                         cy="50%"
-                        innerRadius={55}
-                        outerRadius={75}
-                        paddingAngle={4}
+                        innerRadius={50}
+                        outerRadius={70}
+                        paddingAngle={3}
                       >
                         {data.spendByCategory.map((entry, index) => (
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
@@ -433,84 +396,75 @@ const Dashboard = () => {
                       </Pie>
                       <Tooltip 
                         contentStyle={{ 
-                          backgroundColor: '#090d16', 
-                          borderColor: '#1e293b', 
-                          borderRadius: '12px',
-                          color: '#cbd5e1',
+                          backgroundColor: 'var(--surface)', 
+                          borderColor: 'var(--rule)', 
+                          borderRadius: '6px',
+                          color: 'var(--ink)',
                           fontSize: '11px',
                           fontWeight: 'bold'
                         }}
-                        formatter={(value) => [`₹${value.toLocaleString('en-IN')}`, 'Total']}
+                        formatter={(value) => [`₹${value.toLocaleString('en-IN')}`, 'Credit Sum']}
                       />
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
                 
-                {/* Categorical custom Legends list */}
-                <div className="flex-1 space-y-2.5 max-h-56 overflow-y-auto w-full px-2">
+                <div className="flex-1 space-y-2 max-h-56 overflow-y-auto w-full px-2">
                   {data.spendByCategory.map((item, index) => (
-                    <div key={item.category} className="flex justify-between items-center gap-2 text-xs">
+                    <div key={item.category} className="flex justify-between items-center gap-2 text-xs border-b border-rule/50 pb-1.5">
                       <div className="flex items-center gap-2">
                         <span 
-                          className="h-2.5 w-2.5 rounded-full shrink-0" 
+                          className="h-2 w-2 rounded-full shrink-0" 
                           style={{ backgroundColor: COLORS[index % COLORS.length] }}
                         />
-                        <span className="text-white font-bold truncate max-w-[100px]">{item.category}</span>
+                        <span className="text-ink font-bold truncate max-w-[100px]">{item.category}</span>
                       </div>
                       <div className="text-right">
-                        <span className="text-slate-300 font-bold block">{formatINR(item.amount)}</span>
-                        <span className="text-[9px] text-slate-500 block">{item.percentage}%</span>
+                        <span className="text-ink font-mono font-bold block tabular-nums">{formatINR(item.amount)}</span>
+                        <span className="text-[9px] text-ink-muted block font-mono">{item.percentage}%</span>
                       </div>
                     </div>
                   ))}
                 </div>
               </>
             ) : (
-              <div className="h-full w-full flex flex-col justify-center items-center border border-dashed border-slate-800 rounded-xl bg-slate-950/10">
-                <Tag className="h-8 w-8 text-slate-600 mb-2" />
-                <span className="text-xs text-slate-500 font-medium">No category subdivisions logged.</span>
+              <div className="h-full w-full flex flex-col justify-center items-center border border-dashed border-rule rounded bg-surface/10">
+                <Tag className="h-6 w-6 text-ink-muted mb-2" />
+                <span className="text-xs text-ink-muted font-medium">No categorical subdivisions posted.</span>
               </div>
             )}
           </div>
-        </div>
+        </LedgerCard>
       </div>
 
       {/* AI STRATEGIC FINANCIAL INSIGHTS */}
-      <div className="rounded-2xl border border-slate-800 bg-slate-900/40 p-6 shadow-xl space-y-4">
-        <div className="flex items-center gap-2 border-b border-slate-800/80 pb-3">
-          <Sparkles className="h-4.5 w-4.5 text-violet-400" />
-          <div>
-            <h3 className="text-sm font-bold text-white">System Insight Engine Actions</h3>
-            <p className="text-[9px] text-slate-500 uppercase tracking-widest font-bold">Rule-based predictive analysis and spending alert triggers</p>
-          </div>
-        </div>
-
+      <LedgerCard title="Strategic Audit Analysis Alerts" subtitle="Autonomous Ledger Verification Feed">
         {insightsLoading ? (
           <div className="py-6 flex justify-center items-center">
-            <div className="h-6 w-6 animate-spin rounded-full border-3 border-violet-500/20 border-t-violet-500" />
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-brand border-t-transparent" />
           </div>
         ) : insights.length > 0 ? (
-          <div className="grid gap-4 sm:grid-cols-2">
+          <div className="grid gap-3 sm:grid-cols-2 pt-2">
             {insights.map((insight, idx) => {
               const isAnomaly = insight.includes('Anomaly');
               const isIncrease = insight.includes('increased');
               const isDecrease = insight.includes('decreased') || insight.includes('Great job');
               
-              let borderClass = 'border-slate-800 bg-slate-950/40';
-              let iconColor = 'text-violet-405 text-violet-400';
+              let borderClass = 'border-rule bg-surface';
+              let iconColor = 'text-accent-brass';
               if (isAnomaly) {
-                borderClass = 'border-amber-500/20 bg-amber-500/5';
-                iconColor = 'text-amber-500';
+                borderClass = 'border-warning/30 bg-surface';
+                iconColor = 'text-warning';
               } else if (isIncrease) {
-                borderClass = 'border-rose-500/20 bg-rose-500/5';
-                iconColor = 'text-rose-400';
+                borderClass = 'border-danger/30 bg-surface';
+                iconColor = 'text-ink-red';
               } else if (isDecrease) {
-                borderClass = 'border-emerald-500/25 bg-emerald-500/5';
-                iconColor = 'text-emerald-450 text-emerald-400';
+                borderClass = 'border-ink-green/30 bg-surface';
+                iconColor = 'text-ink-green';
               }
 
               return (
-                <div key={idx} className={`rounded-xl border p-4.5 flex gap-3 text-xs leading-relaxed text-slate-300 font-semibold items-start transition-all hover:scale-[1.01] ${borderClass}`}>
+                <div key={idx} className={`rounded border p-3.5 flex gap-3 text-xs leading-relaxed text-ink font-semibold items-start transition-all ${borderClass}`}>
                   <span className={`mt-0.5 shrink-0 ${iconColor}`}>
                     <Sparkles className="h-4 w-4" />
                   </span>
@@ -520,12 +474,12 @@ const Dashboard = () => {
             })}
           </div>
         ) : (
-          <div className="text-center py-6 border border-dashed border-slate-800 rounded-xl bg-slate-950/10">
-            <Info className="h-8 w-8 text-slate-650 text-slate-600 mx-auto mb-2" />
-            <p className="text-xs text-slate-500 font-medium">Add more transaction logs to populate strategic advice feeds.</p>
+          <div className="text-center py-6 border border-dashed border-rule rounded bg-surface/10 pt-2">
+            <Info className="h-6 w-6 text-ink-muted mx-auto mb-2" />
+            <p className="text-xs text-ink-muted font-medium font-serif">Add more double-entry transactions to trigger automated balancing alerts.</p>
           </div>
         )}
-      </div>
+      </LedgerCard>
 
     </div>
   );

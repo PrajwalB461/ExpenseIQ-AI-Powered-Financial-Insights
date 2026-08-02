@@ -18,45 +18,49 @@ import EMI from './pages/EMI';
 import AISpace from './pages/AISpace';
 import Profile from './pages/Profile';
 
+import { ThemeProvider } from './context/ThemeContext';
+
 function App() {
   return (
-    <NotificationProvider>
-      <AuthProvider>
-        <BrowserRouter>
-          <Routes>
-            {/* Public Landings/Access Routes */}
-            <Route path="/" element={<Landing />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
+    <ThemeProvider>
+      <NotificationProvider>
+        <AuthProvider>
+          <BrowserRouter>
+            <Routes>
+              {/* Public Landings/Access Routes */}
+              <Route path="/" element={<Landing />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
 
-            {/* Protected Main Workspace Routes */}
-            <Route
-              element={
-                <ProtectedRoute>
-                  <Layout />
-                </ProtectedRoute>
-              }
-            >
-              {/* Protected dashboard pages */}
-              <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/income" element={<Income />} />
-              <Route path="/expense" element={<Expense />} />
-              <Route path="/budgeting" element={<Budgeting />} />
-              <Route path="/accounts" element={<Accounts />} />
-              <Route path="/emi" element={<EMI />} />
-              <Route path="/ai-space" element={<AISpace />} />
-              <Route path="/profile" element={<Profile />} />
+              {/* Protected Main Workspace Routes */}
+              <Route
+                element={
+                  <ProtectedRoute>
+                    <Layout />
+                  </ProtectedRoute>
+                }
+              >
+                {/* Protected dashboard pages */}
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/income" element={<Income />} />
+                <Route path="/expense" element={<Expense />} />
+                <Route path="/budgeting" element={<Budgeting />} />
+                <Route path="/accounts" element={<Accounts />} />
+                <Route path="/emi" element={<EMI />} />
+                <Route path="/ai-space" element={<AISpace />} />
+                <Route path="/profile" element={<Profile />} />
 
-              {/* Fallback inside authenticated layout redirects to dashboard */}
-              <Route path="*" element={<Navigate to="/dashboard" replace />} />
-            </Route>
+                {/* Fallback inside authenticated layout redirects to dashboard */}
+                <Route path="*" element={<Navigate to="/dashboard" replace />} />
+              </Route>
 
-            {/* Absolute Catch-all redirects to landing */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </BrowserRouter>
-      </AuthProvider>
-    </NotificationProvider>
+              {/* Absolute Catch-all redirects to landing */}
+              <Route path="*" element={<Navigate to="/" replace />} />
+            </Routes>
+          </BrowserRouter>
+        </AuthProvider>
+      </NotificationProvider>
+    </ThemeProvider>
   );
 }
 

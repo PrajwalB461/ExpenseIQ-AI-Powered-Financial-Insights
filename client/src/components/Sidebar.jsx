@@ -11,11 +11,12 @@ import {
   Sparkles, 
   User, 
   LogOut, 
-  Wallet,
-  Menu
+  BookOpen,
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
-const Sidebar = ({ isOpen, setIsOpen }) => {
+const Sidebar = ({ isOpen, setIsOpen, isCollapsed, toggleCollapse }) => {
   const { logout, user } = useAuth();
   const navigate = useNavigate();
 
@@ -26,13 +27,13 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Income', path: '/income', icon: ArrowUpRight },
-    { name: 'Expense', path: '/expense', icon: ArrowDownRight },
-    { name: 'Budgeting', path: '/budgeting', icon: PieChart },
-    { name: 'Accounts', path: '/accounts', icon: CreditCard },
-    { name: 'EMI Calculator', path: '/emi', icon: Percent },
-    { name: 'AI Space', path: '/ai-space', icon: Sparkles, premium: true },
-    { name: 'Profile Settings', path: '/profile', icon: User },
+    { name: 'Income Ledger', path: '/income', icon: ArrowUpRight },
+    { name: 'Expense Ledger', path: '/expense', icon: ArrowDownRight },
+    { name: 'Budgets Ledger', path: '/budgeting', icon: PieChart },
+    { name: 'Accounts Ledger', path: '/accounts', icon: CreditCard },
+    { name: 'EMI Ledger Calc', path: '/emi', icon: Percent },
+    { name: 'AI Ledger Space', path: '/ai-space', icon: Sparkles, premium: true },
+    { name: 'Account Profile', path: '/profile', icon: User },
   ];
 
   return (
@@ -40,95 +41,111 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
       {/* Mobile Backdrop Overlay */}
       {isOpen && (
         <div 
-          className="fixed inset-0 z-40 bg-slate-950/60 backdrop-blur-sm lg:hidden transition-all"
+          className="fixed inset-0 z-40 bg-black/60 lg:hidden transition-all"
           onClick={() => setIsOpen(false)}
         />
       )}
 
-      {/* Sidebar Container */}
+      {/* Spine: Persistent Sidebar */}
       <aside 
-        className={`fixed top-0 bottom-0 left-0 z-50 flex w-72 flex-col justify-between border-r border-slate-800 bg-slate-900 px-6 py-6 transition-all duration-300 ease-in-out lg:translate-x-0 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
+        className={`fixed top-0 bottom-0 left-0 z-50 flex flex-col justify-between border-r border-[#17392B] bg-[#1F4D3A] py-6 transition-all duration-200 ease-in-out lg:translate-x-0 ${
+          isCollapsed ? 'w-72 lg:w-20 px-3 lg:px-2' : 'w-72 px-6'
+        } ${isOpen ? 'translate-x-0' : '-translate-x-full'} overflow-hidden`}
       >
-        <div className="flex flex-col gap-8">
-          {/* Logo Heading */}
-          <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-tr from-violet-650 to-indigo-650 bg-violet-600 text-white shadow-md">
-              <Wallet className="h-5 w-5" />
+        {/* Brass Rivets along the Left Edge (strictly contained, programmatic vertical rhythm) */}
+        <div className="absolute left-2.5 top-0 bottom-0 flex flex-col items-center justify-start gap-12 py-8 pointer-events-none w-1 select-none overflow-hidden opacity-30">
+          {[...Array(30)].map((_, i) => (
+            <span key={i} className="h-1 w-1 rounded-full bg-[#A8863C] shadow-xs shrink-0" />
+          ))}
+        </div>
+
+        <div className={`flex flex-col gap-8 ${isCollapsed ? 'lg:ml-0' : 'ml-2'}`}>
+          {/* Header Zone with Logo & Toggle Button */}
+          <div className={`flex items-center justify-between gap-2 ${isCollapsed ? 'lg:flex-col lg:gap-4' : ''}`}>
+            <div className="flex items-center gap-3">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-[#A8863C] text-white shadow" title="Ledger Console">
+                <BookOpen className="h-5 w-5 text-[#1F4D3A]" />
+              </div>
+              {!isCollapsed && (
+                <div className="transition-opacity duration-200">
+                  <h1 className="font-serif font-display text-lg font-bold text-white tracking-wide">
+                    Ledger
+                  </h1>
+                  <p className="text-[9px] text-[#A8863C] font-bold uppercase tracking-widest leading-none">
+                    Double-Entry Console
+                  </p>
+                </div>
+              )}
             </div>
-            <div>
-              <h1 className="text-xl font-bold bg-gradient-to-r from-white via-slate-100 to-indigo-200 bg-clip-text text-transparent">
-                FinIntel AI
-              </h1>
-              <p className="text-[10px] text-slate-500 font-semibold uppercase tracking-wider">
-                Autonomous Tracker
-              </p>
-            </div>
+
+            {/* Collapse/Expand Toggle chevron button */}
+            <button
+              onClick={toggleCollapse}
+              className="hidden lg:flex h-6 w-6 shrink-0 items-center justify-center rounded border border-[#17392B] bg-[#17392B]/50 hover:bg-[#17392B] text-[#9AAA9F] hover:text-white transition-all cursor-pointer outline-none"
+              title={isCollapsed ? "Expand Console" : "Collapse Console"}
+            >
+              {isCollapsed ? <ChevronRight className="h-3.5 w-3.5" /> : <ChevronLeft className="h-3.5 w-3.5" />}
+            </button>
           </div>
 
-          {/* Navigation Links */}
-          <nav className="flex flex-col gap-1.5">
+          {/* Navigation Spine Links */}
+          <nav className="flex flex-col gap-1">
             {navItems.map((item) => (
               <NavLink
                 key={item.path}
                 to={item.path}
-                onClick={() => setIsOpen(false)} // Close sidebar on mobile select
+                onClick={() => setIsOpen(false)}
+                title={isCollapsed ? item.name : undefined}
                 className={({ isActive }) => 
-                  `flex items-center justify-between rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-200 group ${
+                  `flex items-center justify-between px-3 py-2.5 text-xs font-semibold tracking-wide transition-all border-l-2 outline-none ${
                     isActive 
-                      ? 'bg-violet-600/10 text-violet-400 border-l-4 border-violet-500' 
-                      : 'text-slate-400 hover:bg-slate-800 hover:text-slate-150'
-                  } ${
-                    item.premium 
-                      ? 'text-cyan-400 hover:bg-cyan-950/20 active:text-cyan-300' 
-                      : ''
-                  }`
+                      ? 'border-[#A8863C] text-white bg-[#17392B]' 
+                      : 'border-transparent text-[#9AAA9F] hover:text-white hover:bg-[#17392B]/50'
+                  } ${isCollapsed ? 'lg:justify-center' : ''}`
                 }
               >
-                {({ isActive }) => (
-                  <>
-                    <div className="flex items-center gap-3">
-                      <item.icon className={`h-4.5 w-4.5 transition-transform duration-200 group-hover:scale-110 ${
-                        item.premium 
-                          ? 'text-cyan-400 group-hover:drop-shadow-[0_0_8px_rgba(34,211,238,0.5)]' 
-                          : isActive ? 'text-violet-400' : 'text-slate-400 group-hover:text-slate-350'
-                      }`} />
-                      <span>{item.name}</span>
-                    </div>
+                <div className="flex items-center gap-3">
+                  <item.icon className="h-4 w-4 shrink-0" />
+                  <span className={`font-sans whitespace-nowrap transition-all duration-200 ${isCollapsed ? 'lg:hidden' : 'block'}`}>
+                    {item.name}
+                  </span>
+                </div>
 
-                    {item.premium && (
-                      <span className="flex items-center gap-1 rounded-md bg-cyan-500/10 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-cyan-400 ring-1 ring-inset ring-cyan-450 border border-cyan-500/20 shadow-sm animate-pulse">
-                        AI Space
-                      </span>
-                    )}
-                  </>
+                {item.premium && !isCollapsed && (
+                  <span className="rounded bg-[#A8863C]/20 border border-[#A8863C]/35 px-1 py-0.5 text-[8px] font-bold uppercase tracking-wider text-[#A8863C] shrink-0">
+                    AI Node
+                  </span>
                 )}
               </NavLink>
             ))}
           </nav>
         </div>
 
-        {/* Footer Profile Details */}
-        <div className="flex flex-col gap-4 border-t border-slate-800 pt-6">
+        {/* Footer Details */}
+        <div className={`flex flex-col gap-4 border-t border-[#17392B] pt-6 ${isCollapsed ? 'lg:ml-0 lg:items-center' : 'ml-2'}`}>
           {user && (
-            <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-850 font-bold border border-slate-700 text-slate-300">
+            <div className="flex items-center gap-3 w-full">
+              <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded bg-[#17392B] border border-[#17392B] text-white font-bold text-xs select-none">
                 {user.name ? user.name[0].toUpperCase() : 'U'}
               </div>
-              <div className="overflow-hidden">
-                <p className="truncate text-sm font-bold text-white">{user.name || 'Demo User'}</p>
-                <p className="truncate text-xs text-slate-500">{user.email || 'demo@expensetracker.ai'}</p>
+              <div className={`overflow-hidden transition-all duration-200 ${isCollapsed ? 'lg:hidden' : 'block'}`}>
+                <p className="truncate text-xs font-bold text-white leading-tight">{user.name || 'Ledger User'}</p>
+                <p className="truncate text-[10px] text-[#9AAA9F]">{user.email || 'user@ledger.com'}</p>
               </div>
             </div>
           )}
 
           <button
             onClick={handleLogout}
-            className="flex w-full items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold text-slate-400 hover:bg-red-950/20 hover:text-red-400 transition-all cursor-pointer border border-transparent hover:border-red-500/10"
+            title="Sign Out"
+            className={`flex w-full items-center gap-3 rounded bg-transparent px-3 py-2 text-xs font-bold text-[#D2665A] hover:bg-[#8C2F22]/20 transition-all border border-transparent hover:border-[#8C2F22]/30 cursor-pointer outline-none ${
+              isCollapsed ? 'lg:justify-center' : ''
+            }`}
           >
-            <LogOut className="h-4.5 w-4.5" />
-            <span>Sign Out</span>
+            <LogOut className="h-4 w-4 shrink-0" />
+            <span className={`font-sans whitespace-nowrap ${isCollapsed ? 'lg:hidden' : 'block'}`}>
+              Close Book (Sign Out)
+            </span>
           </button>
         </div>
       </aside>
