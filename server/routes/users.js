@@ -37,7 +37,6 @@ router.put('/me', protect, async (req, res, next) => {
         });
       }
 
-      console.log('[TEMP DEBUG LOG] user.passwordHash value:', user.passwordHash);
       const match = await bcrypt.compare(currentPassword, user.passwordHash);
       if (!match) {
         return res.status(400).json({
