@@ -287,15 +287,6 @@ export const forgotPassword = async (req, res, next) => {
     // 5. Send OTP via Email
     await sendOtpEmail(normalizedEmail, otp);
 
-    if (process.env.NODE_ENV !== 'production') {
-      try {
-        const fs = await import('fs');
-        fs.writeFileSync('otp.txt', otp);
-      } catch (fsErr) {
-        console.error('Failed to write otp.txt', fsErr);
-      }
-    }
-
     return res.status(200).json(genericResponse);
 
   } catch (error) {

@@ -1,5 +1,6 @@
+import './utils/loadEnv.js';
+
 import express from 'express';
-import dotenv from 'dotenv';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { connectDB } from './utils/db.js';
@@ -16,9 +17,6 @@ import emisRoute from './routes/emis.js';
 import aiRoute from './routes/ai.js';
 import usersRoute from './routes/users.js';
 import backupRoute from './routes/backup.js';
-
-// Load environment variables
-dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;

@@ -12,7 +12,7 @@ router.put('/me', protect, async (req, res, next) => {
   const userId = req.user.id;
 
   try {
-    const user = await User.findById(userId);
+    const user = await User.findById(userId).select('+passwordHash');
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -37,11 +37,12 @@ router.put('/me', protect, async (req, res, next) => {
         });
       }
 
+      console.log('[TEMP DEBUG LOG] user.passwordHash value:', user.passwordHash);
       const match = await bcrypt.compare(currentPassword, user.passwordHash);
       if (!match) {
         return res.status(400).json({
           success: false,
-          message: 'Current password did not match configuration bounds.'
+          message: 'Current password is incorrect'
         });
       }
 
@@ -55,6 +56,7 @@ router.put('/me', protect, async (req, res, next) => {
 
       const salt = await bcrypt.genSalt(10);
       user.passwordHash = await bcrypt.hash(password, salt);
+      user.passwordChangedAt = new Date(Date.now() - 1000);
     }
 
     if (name !== undefined) {
