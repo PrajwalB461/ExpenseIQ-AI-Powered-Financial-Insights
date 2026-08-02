@@ -25,6 +25,7 @@ import {
 } from 'recharts';
 import API from '../api';
 import LedgerCard from '../components/LedgerCard';
+import DateInput from '../components/DateInput';
 
 const COLORS = [
   'var(--brand)',
@@ -211,23 +212,21 @@ const Dashboard = () => {
 
           <div>
             <label className="text-[9px] uppercase text-ink-muted block mb-1.5 font-bold">Start Date</label>
-            <input
-              type="date"
+            <DateInput
               value={fromDate}
               disabled={preset !== 'custom'}
               onChange={(e) => setFromDate(e.target.value)}
-              className="w-full h-9 rounded border border-rule bg-surface px-3 text-xs text-ink focus:outline-none focus:border-brand font-semibold disabled:opacity-40"
+              className="h-9 font-mono"
             />
           </div>
 
           <div>
             <label className="text-[9px] uppercase text-ink-muted block mb-1.5 font-bold">End Date</label>
-            <input
-              type="date"
+            <DateInput
               value={toDate}
               disabled={preset !== 'custom'}
               onChange={(e) => setToDate(e.target.value)}
-              className="w-full h-9 rounded border border-rule bg-surface px-3 text-xs text-ink focus:outline-none focus:border-brand font-semibold disabled:opacity-40"
+              className="h-9 font-mono"
             />
           </div>
 

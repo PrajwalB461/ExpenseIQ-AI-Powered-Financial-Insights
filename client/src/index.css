@@ -82,3 +82,12 @@
 .theme-transition {
   transition: all 0.15s ease-in-out;
 }
+
+/* Native Date Picker Theme Adjustments */
+[data-theme="ledger-night"] input[type="date"] {
+  color-scheme: dark;
+}
+[data-theme="ledger-day"] input[type="date"] {
+  color-scheme: light;
+}
+

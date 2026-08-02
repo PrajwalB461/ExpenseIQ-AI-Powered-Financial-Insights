@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Calendar, Calculator, AlertTriangle, Plus, Trash2, Clock, Info } from 'lucide-react';
 import API from '../api';
 import LedgerCard from '../components/LedgerCard';
+import DateInput from '../components/DateInput';
 
 const EMI = () => {
   // Main Data States
@@ -365,20 +366,16 @@ const EMI = () => {
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="text-[9px] uppercase text-ink-muted block mb-1 font-bold">Start date</label>
-                  <input
-                    type="date"
+                  <DateInput
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full rounded border border-rule bg-surface px-3 py-2 text-ink focus:outline-none focus:border-brand"
                   />
                 </div>
                 <div>
                   <label className="text-[9px] uppercase text-ink-muted block mb-1 font-bold">End date</label>
-                  <input
-                    type="date"
+                  <DateInput
                     value={endDate}
                     onChange={(e) => setEndDate(e.target.value)}
-                    className="w-full rounded border border-rule bg-surface px-3 py-2 text-ink focus:outline-none focus:border-brand"
                   />
                 </div>
               </div>

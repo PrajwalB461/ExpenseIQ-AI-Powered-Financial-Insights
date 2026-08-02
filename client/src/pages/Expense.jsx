@@ -4,6 +4,7 @@ import API from '../api';
 import { useNotification } from '../context/NotificationContext';
 import LedgerCard from '../components/LedgerCard';
 import LedgerRow from '../components/LedgerRow';
+import DateInput from '../components/DateInput';
 
 const Expense = () => {
   const { showNotification } = useNotification();
@@ -426,20 +427,18 @@ const Expense = () => {
         <div className="grid gap-4 sm:grid-cols-5 items-end pt-2">
           <div>
             <label className="text-[9px] uppercase text-ink-muted block mb-1.5 font-bold">From Date</label>
-            <input
-              type="date"
+            <DateInput
               value={filters.from}
               onChange={(e) => setFilters(prev => ({ ...prev, from: e.target.value }))}
-              className="w-full h-9 rounded border border-rule bg-surface px-3 text-ink text-xs focus:outline-none focus:border-brand font-semibold"
+              className="h-9 font-mono"
             />
           </div>
           <div>
             <label className="text-[9px] uppercase text-ink-muted block mb-1.5 font-bold">To Date</label>
-            <input
-              type="date"
+            <DateInput
               value={filters.to}
               onChange={(e) => setFilters(prev => ({ ...prev, to: e.target.value }))}
-              className="w-full h-9 rounded border border-rule bg-surface px-3 text-ink text-xs focus:outline-none focus:border-brand font-semibold"
+              className="h-9 font-mono"
             />
           </div>
           <div>
@@ -692,12 +691,10 @@ const Expense = () => {
                   </div>
                   <div>
                     <label className="text-ink-muted uppercase tracking-widest text-[9px] block mb-1 font-bold">Log Date</label>
-                    <input
-                      type="date"
+                    <DateInput
                       required
                       value={addForm.date}
                       onChange={(e) => setAddForm(prev => ({ ...prev, date: e.target.value }))}
-                      className="w-full rounded border border-rule bg-surface px-3 py-2 text-xs text-ink focus:outline-none focus:border-brand"
                     />
                   </div>
                 </div>
@@ -841,12 +838,10 @@ const Expense = () => {
                   </div>
                   <div>
                     <label className="text-ink-muted uppercase tracking-widest text-[9px] block mb-1 font-bold">Log Date</label>
-                    <input
-                      type="date"
+                    <DateInput
                       required
                       value={editForm.date}
                       onChange={(e) => setEditForm(prev => ({ ...prev, date: e.target.value }))}
-                      className="w-full rounded border border-rule bg-surface px-3 py-2 text-xs text-ink focus:outline-none focus:border-brand"
                     />
                   </div>
                 </div>

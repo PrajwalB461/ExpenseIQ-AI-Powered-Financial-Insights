@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Sparkles, Trash2, Plus, Calendar, ArrowUpRight, AlertTriangle, Info } from 'lucide-react';
 import API from '../api';
 import LedgerCard from '../components/LedgerCard';
+import DateInput from '../components/DateInput';
 
 const Budgeting = () => {
   const [budgets, setBudgets] = useState([]);
@@ -362,20 +363,16 @@ const Budgeting = () => {
                 <div className="grid grid-cols-2 gap-3 pb-1">
                   <div>
                     <label className="text-[9px] uppercase text-ink-muted block mb-1 font-bold">Start Date</label>
-                    <input
-                      type="date"
+                    <DateInput
                       value={startDate}
                       onChange={(e) => setStartDate(e.target.value)}
-                      className="w-full rounded border border-rule bg-surface px-2 py-1.5 text-xs text-ink focus:outline-none focus:border-brand"
                     />
                   </div>
                   <div>
                     <label className="text-[9px] uppercase text-ink-muted block mb-1 font-bold">End Date</label>
-                    <input
-                      type="date"
+                    <DateInput
                       value={endDate}
                       onChange={(e) => setEndDate(e.target.value)}
-                      className="w-full rounded border border-rule bg-surface px-2 py-1.5 text-xs text-ink focus:outline-none focus:border-brand"
                     />
                   </div>
                 </div>
@@ -384,11 +381,9 @@ const Budgeting = () => {
               {duration !== 'custom' && (
                 <div>
                   <label className="text-[9px] uppercase text-ink-muted block mb-1 font-bold">Effective From Date (Optional)</label>
-                  <input
-                    type="date"
+                  <DateInput
                     value={startDate}
                     onChange={(e) => setStartDate(e.target.value)}
-                    className="w-full rounded border border-rule bg-surface px-3 py-2 text-xs text-ink focus:outline-none focus:border-brand"
                   />
                   <p className="text-[8px] text-ink-muted mt-1 uppercase font-semibold">Defaults to start of the calendar month</p>
                 </div>
