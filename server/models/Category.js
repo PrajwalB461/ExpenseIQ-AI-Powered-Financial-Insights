@@ -22,6 +22,10 @@ const categorySchema = new mongoose.Schema({
   isDefault: {
     type: Boolean,
     default: false
+  },
+  essential: {
+    type: Boolean,
+    default: false
   }
 });
 

@@ -35,7 +35,7 @@ export const getCategories = async (req, res, next) => {
 // @route   POST /api/v1/categories
 // @access  Private
 export const createCategory = async (req, res, next) => {
-  const { name, type } = req.body;
+  const { name, type, essential } = req.body;
   const userId = req.user.id;
 
   try {
@@ -71,7 +71,8 @@ export const createCategory = async (req, res, next) => {
       userId,
       name: name.trim(),
       type,
-      isDefault: false
+      isDefault: false,
+      essential: essential === true
     });
 
     res.status(201).json({

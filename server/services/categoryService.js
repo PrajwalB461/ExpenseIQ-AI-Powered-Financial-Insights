@@ -18,12 +18,14 @@ export const seedDefaultCategories = async (userId) => {
     }
 
     // Map expense categories
+    const essentialExpenses = ['Food', 'Transport', 'Bills', 'Health'];
     for (const name of defaultExpenseCategories) {
       categoriesToSeed.push({
         userId,
         name,
         type: 'expense',
-        isDefault: true
+        isDefault: true,
+        essential: essentialExpenses.includes(name)
       });
     }
 
