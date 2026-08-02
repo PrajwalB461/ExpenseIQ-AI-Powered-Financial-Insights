@@ -13,7 +13,7 @@ export const register = async (req, res, next) => {
 
   try {
     // Check if user already exists
-    const userExists = await User.findOne({ email });
+    const userExists = await User.findOne({ email: email.toLowerCase().trim() });
     if (userExists) {
       return res.status(400).json({
         success: false,
@@ -109,7 +109,8 @@ export const login = async (req, res, next) => {
 
   try {
     // Find user (case-insensitive done via model middleware config, but regex/normal checks work)
-    const user = await User.findOne({ email });
+    // Find user (with explicit select of passwordHash due to select: false in schema option)
+    const user = await User.findOne({ email: email.toLowerCase().trim() }).select('+passwordHash');
     if (!user) {
       return res.status(401).json({
         success: false,
@@ -126,7 +127,7 @@ export const login = async (req, res, next) => {
     }
 
     // Check credentials match
-    const isMatch = await bcrypt.compare(password, user.passwordHash);
+    const isMatch = await bcrypt.compare(password, user.passwordHash || '');
     if (!isMatch) {
       return res.status(401).json({
         success: false,

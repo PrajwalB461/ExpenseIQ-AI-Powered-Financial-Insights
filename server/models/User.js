@@ -18,7 +18,8 @@ const userSchema = new mongoose.Schema({
     // passwordHash is only required for local auth provider
     required: function() {
       return this.authProvider === 'local';
-    }
+    },
+    select: false,
   },
   isEmailVerified: {
     type: Boolean,
