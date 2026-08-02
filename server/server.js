@@ -14,6 +14,8 @@ import dashboardRoute from './routes/dashboard.js';
 import budgetsRoute from './routes/budgets.js';
 import emisRoute from './routes/emis.js';
 import aiRoute from './routes/ai.js';
+import usersRoute from './routes/users.js';
+import backupRoute from './routes/backup.js';
 
 // Load environment variables
 dotenv.config();
@@ -75,6 +77,8 @@ app.use('/api/v1/dashboard', dashboardRoute);
 app.use('/api/v1/budgets', budgetsRoute);
 app.use('/api/v1/emis', emisRoute);
 app.use('/api/v1/ai', aiRoute);
+app.use('/api/v1/users', usersRoute);
+app.use('/api/v1/backup', backupRoute);
 
 // Catch-all route for unmatched API routes
 app.all('*', (req, res, next) => {

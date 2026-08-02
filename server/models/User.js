@@ -35,6 +35,10 @@ const userSchema = new mongoose.Schema({
   verificationTokenExpires: {
     type: Date,
   },
+  monthlyIncome: {
+    type: Number,
+    default: 0,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
