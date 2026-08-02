@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { NotificationProvider } from './context/NotificationContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import Layout from './components/Layout';
 
@@ -19,41 +20,43 @@ import Profile from './pages/Profile';
 
 function App() {
   return (
-    <AuthProvider>
-      <BrowserRouter>
-        <Routes>
-          {/* Public Landings/Access Routes */}
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/register" element={<Register />} />
+    <NotificationProvider>
+      <AuthProvider>
+        <BrowserRouter>
+          <Routes>
+            {/* Public Landings/Access Routes */}
+            <Route path="/" element={<Landing />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/register" element={<Register />} />
 
-          {/* Protected Main Workspace Routes */}
-          <Route
-            element={
-              <ProtectedRoute>
-                <Layout />
-              </ProtectedRoute>
-            }
-          >
-            {/* Protected dashboard pages */}
-            <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/income" element={<Income />} />
-            <Route path="/expense" element={<Expense />} />
-            <Route path="/budgeting" element={<Budgeting />} />
-            <Route path="/accounts" element={<Accounts />} />
-            <Route path="/emi" element={<EMI />} />
-            <Route path="/ai-space" element={<AISpace />} />
-            <Route path="/profile" element={<Profile />} />
+            {/* Protected Main Workspace Routes */}
+            <Route
+              element={
+                <ProtectedRoute>
+                  <Layout />
+                </ProtectedRoute>
+              }
+            >
+              {/* Protected dashboard pages */}
+              <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/income" element={<Income />} />
+              <Route path="/expense" element={<Expense />} />
+              <Route path="/budgeting" element={<Budgeting />} />
+              <Route path="/accounts" element={<Accounts />} />
+              <Route path="/emi" element={<EMI />} />
+              <Route path="/ai-space" element={<AISpace />} />
+              <Route path="/profile" element={<Profile />} />
 
-            {/* Fallback inside authenticated layout redirects to dashboard */}
-            <Route path="*" element={<Navigate to="/dashboard" replace />} />
-          </Route>
+              {/* Fallback inside authenticated layout redirects to dashboard */}
+              <Route path="*" element={<Navigate to="/dashboard" replace />} />
+            </Route>
 
-          {/* Absolute Catch-all redirects to landing */}
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </AuthProvider>
+            {/* Absolute Catch-all redirects to landing */}
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthProvider>
+    </NotificationProvider>
   );
 }
 

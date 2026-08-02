@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { Plus, Trash2, Edit3, Filter, Calendar, Tag, ChevronLeft, ChevronRight, Check, X, AlertTriangle, Landmark, Banknote } from 'lucide-react';
 import API from '../api';
+import { useNotification } from '../context/NotificationContext';
 
 const Expense = () => {
+  const { showNotification } = useNotification();
   const [expenses, setExpenses] = useState([]);
   const [accounts, setAccounts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -215,6 +217,9 @@ const Expense = () => {
 
       if (res.data?.success) {
         setSuccess('Expense logged successfully! Linked account decremented.');
+        if (res.data.warning) {
+          showNotification(res.data.warning, 'warning', 8000);
+        }
         setAddForm({
           accountId: accounts[0]?._id || '',
           categoryId: categories[0]?._id || '',
@@ -253,6 +258,9 @@ const Expense = () => {
 
       if (res.data?.success) {
         setSuccess('Expense transaction modified. Re-balanced target account assets.');
+        if (res.data.warning) {
+          showNotification(res.data.warning, 'warning', 8000);
+        }
         setIsEditModalOpen(false);
         setActiveExpense(null);
         fetchExpenses();

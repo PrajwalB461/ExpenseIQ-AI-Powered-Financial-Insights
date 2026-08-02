@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import Expense from '../models/Expense.js';
 import Account from '../models/Account.js';
 import Category from '../models/Category.js';
+import Budget from '../models/Budget.js';
 
 // Safe Transaction Helper supporting standalone fallback
 const runInSession = async (operation) => {
@@ -95,9 +96,41 @@ export const createExpense = async (req, res, next) => {
       return expenseDoc;
     });
 
+    // Determine if this expense pushes active category budgets over alerts limits (80% or 100%)
+    let warning = null;
+    try {
+      const activeBudget = await Budget.findOne({
+        userId,
+        categoryId,
+        startDate: { $lte: newExpense.date },
+        endDate: { $gte: newExpense.date }
+      });
+
+      if (activeBudget) {
+        const budgetExpenses = await Expense.find({
+          userId,
+          categoryId,
+          date: { $gte: activeBudget.startDate, $lte: activeBudget.endDate }
+        });
+
+        const totalSpent = budgetExpenses.reduce((sum, e) => sum + e.amount, 0);
+        const limit = activeBudget.limitAmount;
+
+        if (totalSpent >= limit) {
+          warning = `Budget Exceeded! You have spent ₹${totalSpent.toLocaleString('en-IN')} of your ₹${limit.toLocaleString('en-IN')} limit for this period.`;
+        } else if (totalSpent >= limit * 0.8) {
+          const percent = ((totalSpent / limit) * 100).toFixed(0);
+          warning = `Budget Alert! You have used ${percent}% of your category budget (Spent ₹${totalSpent.toLocaleString('en-IN')} of ₹${limit.toLocaleString('en-IN')}).`;
+        }
+      }
+    } catch (budgetErr) {
+      console.error('Failed to resolve budget warnings during creation:', budgetErr);
+    }
+
     res.status(201).json({
       success: true,
-      data: newExpense
+      data: newExpense,
+      warning
     });
 
   } catch (error) {
@@ -261,9 +294,41 @@ export const updateExpense = async (req, res, next) => {
       return updatedDoc;
     });
 
+    // Check budget warnings on modification
+    let warning = null;
+    try {
+      const activeBudget = await Budget.findOne({
+        userId,
+        categoryId: targetCategoryId,
+        startDate: { $lte: updatedExpense.date },
+        endDate: { $gte: updatedExpense.date }
+      });
+
+      if (activeBudget) {
+        const budgetExpenses = await Expense.find({
+          userId,
+          categoryId: targetCategoryId,
+          date: { $gte: activeBudget.startDate, $lte: activeBudget.endDate }
+        });
+
+        const totalSpent = budgetExpenses.reduce((sum, e) => sum + e.amount, 0);
+        const limit = activeBudget.limitAmount;
+
+        if (totalSpent >= limit) {
+          warning = `Budget Exceeded! You have spent ₹${totalSpent.toLocaleString('en-IN')} of your ₹${limit.toLocaleString('en-IN')} limit for this period.`;
+        } else if (totalSpent >= limit * 0.8) {
+          const percent = ((totalSpent / limit) * 100).toFixed(0);
+          warning = `Budget Alert! You have used ${percent}% of your category budget (Spent ₹${totalSpent.toLocaleString('en-IN')} of ₹${limit.toLocaleString('en-IN')}).`;
+        }
+      }
+    } catch (budgetErr) {
+      console.error('Failed to resolve budget warnings during update:', budgetErr);
+    }
+
     res.status(200).json({
       success: true,
-      data: updatedExpense
+      data: updatedExpense,
+      warning
     });
 
   } catch (error) {
