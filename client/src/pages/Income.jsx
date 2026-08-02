@@ -8,7 +8,7 @@ const Income = () => {
   const [incomes, setIncomes] = useState([]);
   const [accounts, setAccounts] = useState([]);
   const [categories, setCategories] = useState([]);
-  
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -68,7 +68,7 @@ const Income = () => {
         API.get('/accounts'),
         API.get('/categories?type=income')
       ]);
-      
+
       if (accRes.data?.success) setAccounts(accRes.data.data);
       if (catRes.data?.success) setCategories(catRes.data.data);
     } catch (err) {
@@ -82,7 +82,7 @@ const Income = () => {
     try {
       const { from, to, categoryId } = filters;
       let queryParams = `?page=${pagination.page}&limit=${pagination.limit}`;
-      
+
       if (from) queryParams += `&from=${from}`;
       if (to) queryParams += `&to=${to}`;
       if (categoryId) queryParams += `&categoryId=${categoryId}`;
@@ -129,8 +129,8 @@ const Income = () => {
       });
       if (res.data?.success) {
         const createdCat = res.data.data;
-        setCategories(prev => [...prev, createdCat].sort((a,b) => a.name.localeCompare(b.name)));
-        
+        setCategories(prev => [...prev, createdCat].sort((a, b) => a.name.localeCompare(b.name)));
+
         if (isAddModalOpen) {
           setAddForm(prev => ({ ...prev, categoryId: createdCat._id }));
         } else if (isEditModalOpen) {
@@ -251,7 +251,7 @@ const Income = () => {
     setSuccess('');
     setShowNewCatInput(false);
     setActiveIncome(inc);
-    
+
     setEditForm({
       accountId: inc.accountId?._id || inc.accountId || '',
       categoryId: inc.categoryId?._id || inc.categoryId || '',
@@ -282,7 +282,7 @@ const Income = () => {
 
   return (
     <div className="space-y-6 text-xs text-ink font-semibold">
-      
+
       {/* Notifications */}
       {success && (
         <div className="flex items-center gap-2 rounded border border-ink-green/20 bg-ink-green/5 p-4 text-ink-green">
@@ -303,7 +303,7 @@ const Income = () => {
         {/* Dynamic accumulated totals */}
         <LedgerCard className="h-full flex flex-col justify-between">
           <div className="min-h-[32px] flex flex-col justify-start">
-            <h3 className="font-serif font-display text-base font-bold text-ink leading-tight">Visible Inflow Debit</h3>
+            <h3 className="font-serif font-display text-base font-bold text-ink leading-tight">Visible Inflow Credit</h3>
             <p className="text-ink-muted text-[10px] uppercase font-bold tracking-wider mt-1">Accumulated Income Streams</p>
           </div>
           <div className="flex-1 flex flex-col justify-end mt-2 border-t border-rule pt-3 text-right">
@@ -368,7 +368,7 @@ const Income = () => {
       </div>
 
       {/* Main ledger list container */}
-      <LedgerCard title="Earnings Debit Book" subtitle={`${pagination.total} records total`}>
+      <LedgerCard title="Earnings Credit Book" subtitle={`${pagination.total} records total`}>
         <div className="flex justify-between items-center mb-4 pt-2">
           <button
             onClick={handleSortToggle}
@@ -376,13 +376,13 @@ const Income = () => {
           >
             Sort Date {sortOrder === 'asc' ? '▲' : '▼'}
           </button>
-          
+
           <button
             onClick={openAddModal}
             className="flex items-center gap-1.5 rounded bg-brand hover:bg-brand-hover text-white px-4 py-2 text-xs font-bold transition-all cursor-pointer outline-none"
           >
             <Plus className="h-4 w-4" />
-            Record Debit entry
+            Record Credit entry
           </button>
         </div>
 
@@ -395,7 +395,7 @@ const Income = () => {
           <div className="border border-rule rounded divide-y divide-rule overflow-hidden">
             {incomes.map((inc) => (
               <div key={inc._id} className="group relative">
-                <LedgerRow 
+                <LedgerRow
                   label={inc.description || 'Earnings Inflow'}
                   categoryName={`${inc.categoryId?.name || 'Inflow'} | ${inc.accountId?.name || 'Asset'}`}
                   amount={inc.amount}
@@ -440,7 +440,7 @@ const Income = () => {
             <span className="text-[10px] text-ink-muted font-bold">
               Page {pagination.page} of {pagination.pages}
             </span>
-            
+
             <div className="flex gap-2">
               <button
                 disabled={pagination.page === 1}
@@ -468,7 +468,7 @@ const Income = () => {
             <LedgerCard>
               <div className="flex justify-between items-center border-b border-rule pb-3.5 mb-4">
                 <div>
-                  <h3 className="text-sm font-bold text-ink leading-tight">Log Debit Entry</h3>
+                  <h3 className="text-sm font-bold text-ink leading-tight">Log Credit Entry</h3>
                   <p className="text-[9px] text-ink-muted uppercase font-bold tracking-wider mt-0.5">Record Asset Destination Inflow</p>
                 </div>
                 <button
@@ -591,7 +591,7 @@ const Income = () => {
                     type="submit"
                     className="w-full rounded bg-brand hover:bg-brand-hover py-3 text-xs font-bold text-white transition-all cursor-pointer outline-none"
                   >
-                    Log Inflow (Debit)
+                    Log Inflow (Credit)
                   </button>
                 </div>
               </form>

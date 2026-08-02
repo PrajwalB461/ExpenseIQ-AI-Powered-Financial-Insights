@@ -7,9 +7,7 @@ import LedgerCard from '../components/LedgerCard';
 const Profile = () => {
   const { user, setUser } = useAuth();
   
-  // System Health States
-  const [dbState, setDbState] = useState('CHECKING');
-  const [features, setFeatures] = useState({ groq: 'checking', resend: 'checking' });
+
 
   // Profile forms updates configuration states
   const [name, setName] = useState(user?.name || '');
@@ -34,26 +32,7 @@ const Profile = () => {
   const [backupSuccess, setBackupSuccess] = useState('');
   const [backupError, setBackupError] = useState('');
 
-  // Load backend health config values
-  useEffect(() => {
-    const fetchSystemStatus = async () => {
-      try {
-        const res = await API.get('/health');
-        if (res.data?.success) {
-          setDbState('CONNECTED');
-          setFeatures({
-            groq: res.data.data.features.groqAiSpace,
-            resend: res.data.data.features.resendEmails
-          });
-        } else {
-          setDbState('DEGRADED');
-        }
-      } catch (err) {
-        setDbState('OFFLINE');
-      }
-    };
-    fetchSystemStatus();
-  }, []);
+
 
   // Update initial form parameters if user session fetches later
   useEffect(() => {
@@ -179,10 +158,10 @@ const Profile = () => {
   };
 
   return (
-    <div className="grid gap-6 lg:grid-cols-3 text-xs font-semibold text-ink">
+    <div className="grid gap-6 lg:grid-cols-2 text-xs font-semibold text-ink">
       
-      {/* Settings Forms (Span 2) */}
-      <div className="lg:col-span-2 space-y-6">
+      {/* Settings Forms (Column 1) */}
+      <div className="space-y-6 border-b lg:border-b-0 border-rule pb-6 lg:pb-0">
         
         {/* Personal Details */}
         <LedgerCard title="Personal Profile Settings" subtitle="Verify and modify settings options">
@@ -302,26 +281,6 @@ const Profile = () => {
             </form>
           </LedgerCard>
         )}
-
-        {/* Integration details */}
-        <LedgerCard title="Deployment Status Monitor" subtitle="Diagnostics and configuration targets">
-          <div className="space-y-3.5 pt-2">
-            <div className="flex justify-between items-center bg-surface p-3 rounded border border-rule">
-              <span className="text-ink font-semibold">Database Engine:</span>
-              <span className={`inline-flex items-center gap-1.5 rounded px-2 py-0.5 text-[10px] font-bold border ${
-                dbState === 'CONNECTED' 
-                  ? 'border-brand text-ink-green bg-ink-green/5' 
-                  : 'border-danger text-ink-red bg-danger/5'
-              }`}>
-                {dbState === 'CONNECTED' ? 'MongoDB Connected' : 'Offline'}
-              </span>
-            </div>
-            <div className="flex justify-between items-center bg-surface p-3 rounded border border-rule">
-              <span className="text-ink font-semibold">Security Token Mode:</span>
-              <span className="font-mono text-[10px] text-ink-muted">JWT Cookie Auth Flow</span>
-            </div>
-          </div>
-        </LedgerCard>
 
       </div>
 

@@ -9,7 +9,12 @@ const LedgerRow = ({ label, categoryName, amount, isExpense, date, description, 
     <div className="grid grid-cols-[12px_1fr_auto_80px] md:grid-cols-[16px_140px_1fr_100px_80px_120px] items-center gap-2 md:gap-4 py-3 border-b border-rule hover:bg-surface/40 px-3 md:px-4 transition-colors text-xs w-full">
       {/* [category-dot] */}
       <div className="flex items-center justify-center">
-        <span className={`h-2 w-2 rounded-full shrink-0 ${isExpense ? 'bg-ink-red/80' : 'bg-ink-green/80'}`} />
+        <span 
+          className={`h-2 w-2 rounded-full shrink-0 ${isExpense ? 'bg-ink-red/80' : 'bg-ink-green/80'}`}
+          aria-label={isExpense ? "Expense (credit)" : "Income (debit)"}
+          title={isExpense ? "Expense (credit)" : "Income (debit)"}
+          role="img"
+        />
       </div>
 
       {/* [category-tag] */}

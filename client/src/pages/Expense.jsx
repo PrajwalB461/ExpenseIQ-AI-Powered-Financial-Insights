@@ -10,7 +10,7 @@ const Expense = () => {
   const [expenses, setExpenses] = useState([]);
   const [accounts, setAccounts] = useState([]);
   const [categories, setCategories] = useState([]);
-  
+
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
@@ -78,7 +78,7 @@ const Expense = () => {
         API.get('/accounts'),
         API.get('/categories?type=expense')
       ]);
-      
+
       if (accRes.data?.success) setAccounts(accRes.data.data);
       if (catRes.data?.success) setCategories(catRes.data.data);
     } catch (err) {
@@ -108,7 +108,7 @@ const Expense = () => {
     try {
       const { from, to, categoryId } = filters;
       let queryParams = `?page=${pagination.page}&limit=${pagination.limit}`;
-      
+
       if (from) queryParams += `&from=${from}`;
       if (to) queryParams += `&to=${to}`;
       if (categoryId) queryParams += `&categoryId=${categoryId}`;
@@ -155,11 +155,11 @@ const Expense = () => {
         type: 'expense',
         essential: newCatEssential
       });
-      
+
       if (res.data?.success) {
         const createdCat = res.data.data;
-        setCategories(prev => [...prev, createdCat].sort((a,b) => a.name.localeCompare(b.name)));
-        
+        setCategories(prev => [...prev, createdCat].sort((a, b) => a.name.localeCompare(b.name)));
+
         if (isAddModalOpen) {
           setAddForm(prev => ({ ...prev, categoryId: createdCat._id }));
         } else if (isEditModalOpen) {
@@ -290,7 +290,7 @@ const Expense = () => {
     setSuccess('');
     setShowNewCatInput(false);
     setActiveExpense(exp);
-    
+
     setEditForm({
       accountId: exp.accountId?._id || exp.accountId || '',
       categoryId: exp.categoryId?._id || exp.categoryId || '',
@@ -329,7 +329,7 @@ const Expense = () => {
 
   return (
     <div className="space-y-6 text-xs text-ink font-semibold">
-      
+
       {/* Notifications */}
       {success && (
         <div className="flex items-center gap-2 rounded border border-ink-green/20 bg-ink-green/5 p-4 text-ink-green">
@@ -350,7 +350,7 @@ const Expense = () => {
         {/* Total Spend */}
         <LedgerCard className="h-full flex flex-col justify-between">
           <div className="min-h-[32px] flex flex-col justify-start">
-            <h3 className="font-serif font-display text-sm font-bold text-ink leading-tight">Credit (Total Spends)</h3>
+            <h3 className="font-serif font-display text-sm font-bold text-ink leading-tight">Debit (Total Spends)</h3>
             <p className="text-ink-muted text-[10px] uppercase font-bold tracking-wider mt-1">Debit outgo totals</p>
           </div>
           <div className="flex-1 flex flex-col justify-end mt-2 border-t border-rule pt-3 text-right">
@@ -396,11 +396,11 @@ const Expense = () => {
             <div className="h-2 w-full rounded bg-surface/50 overflow-hidden flex border border-rule">
               {summary.totalSpend > 0 ? (
                 <>
-                  <div 
+                  <div
                     className="h-full bg-ink-green transition-all duration-300"
                     style={{ width: `${(summary.essentialSplit.essential / summary.totalSpend) * 100}%` }}
                   />
-                  <div 
+                  <div
                     className="h-full bg-accent-brass transition-all duration-300"
                     style={{ width: `${(summary.essentialSplit.discretionary / summary.totalSpend) * 100}%` }}
                   />
@@ -487,13 +487,13 @@ const Expense = () => {
           >
             Sort Date {sortOrder === 'asc' ? '▲' : '▼'}
           </button>
-          
+
           <button
             onClick={openAddModal}
             className="flex items-center gap-1.5 rounded bg-brand hover:bg-brand-hover text-white px-4 py-2 text-xs font-bold transition-all cursor-pointer outline-none"
           >
             <Plus className="h-4 w-4" />
-            Record Credit (Outflow)
+            Record Debit (Outflow)
           </button>
         </div>
 
@@ -508,7 +508,7 @@ const Expense = () => {
               const isEssential = exp.essential === true || exp.categoryId?.essential === true;
               return (
                 <div key={exp._id} className="group relative">
-                  <LedgerRow 
+                  <LedgerRow
                     label={exp.description || 'Outflow Transaction'}
                     categoryName={`${exp.categoryId?.name || 'Outflow'} | ${exp.accountId?.name || 'Source'} | ${isEssential ? 'Need' : 'Want'}`}
                     amount={exp.amount}
@@ -554,7 +554,7 @@ const Expense = () => {
             <span className="text-[10px] text-ink-muted font-bold">
               Page {pagination.page} of {pagination.pages}
             </span>
-            
+
             <div className="flex gap-2">
               <button
                 disabled={pagination.page === 1}
@@ -582,7 +582,7 @@ const Expense = () => {
             <LedgerCard>
               <div className="flex justify-between items-center border-b border-rule pb-3.5 mb-4">
                 <div>
-                  <h3 className="text-sm font-bold text-ink leading-tight">Log Credit Entry (Outflow)</h3>
+                  <h3 className="text-sm font-bold text-ink leading-tight">Log Debit Entry (Outflow)</h3>
                   <p className="text-[9px] text-ink-muted uppercase font-bold tracking-wider mt-0.5">Record asset source outgo</p>
                 </div>
                 <button
@@ -659,14 +659,14 @@ const Expense = () => {
                         </button>
                       </div>
                       {newCatError && <span className="text-[9px] text-ink-red block">{newCatError}</span>}
-                      
+
                       <div className="flex items-center gap-2">
-                        <input 
-                          type="checkbox" 
+                        <input
+                          type="checkbox"
                           id="newCatEssential"
                           checked={newCatEssential}
                           onChange={(e) => setNewCatEssential(e.target.checked)}
-                          className="rounded bg-surface border-rule text-brand focus:ring-0 focus:outline-none" 
+                          className="rounded bg-surface border-rule text-brand focus:ring-0 focus:outline-none"
                         />
                         <label htmlFor="newCatEssential" className="text-[9px] text-ink-muted uppercase tracking-widest cursor-pointer select-none font-bold">
                           Essential / Operational need (Rent, Food, Bills)
@@ -718,7 +718,7 @@ const Expense = () => {
                     type="submit"
                     className="w-full rounded bg-brand hover:bg-brand-hover py-3 text-xs font-bold text-white transition-all cursor-pointer outline-none"
                   >
-                    Log Outflow (Credit)
+                    Log Outflow (Debit)
                   </button>
                 </div>
               </form>
@@ -809,14 +809,14 @@ const Expense = () => {
                         </button>
                       </div>
                       {newCatError && <span className="text-[9px] text-ink-red block">{newCatError}</span>}
-                      
+
                       <div className="flex items-center gap-2">
-                        <input 
-                          type="checkbox" 
+                        <input
+                          type="checkbox"
                           id="newCatEssentialEdit"
                           checked={newCatEssential}
                           onChange={(e) => setNewCatEssential(e.target.checked)}
-                          className="rounded bg-surface border-rule text-brand focus:ring-0 focus:outline-none" 
+                          className="rounded bg-surface border-rule text-brand focus:ring-0 focus:outline-none"
                         />
                         <label htmlFor="newCatEssentialEdit" className="text-[9px] text-ink-muted uppercase tracking-widest cursor-pointer select-none font-bold">
                           Essential / Operational need (Rent, Food, Bills)
@@ -884,7 +884,7 @@ const Expense = () => {
                 <AlertTriangle className="h-9 w-9 text-danger mx-auto mb-3" />
                 <h3 className="text-sm font-bold text-ink mb-1.5">Delete Outflow Entry?</h3>
                 <p className="text-[10px] text-ink-muted mb-5 leading-normal">
-                  Deletions will permanently reverse the credit balance of <span className="font-bold text-ink">₹{activeExpense?.amount?.toLocaleString('en-IN')}</span> from account <span className="font-bold text-ink">"{activeExpense?.accountId?.name}"</span>.
+                  Deletions will permanently reverse the Debit balance of <span className="font-bold text-ink">₹{activeExpense?.amount?.toLocaleString('en-IN')}</span> from account <span className="font-bold text-ink">"{activeExpense?.accountId?.name}"</span>.
                 </p>
 
                 {error && (

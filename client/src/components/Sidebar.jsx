@@ -27,8 +27,8 @@ const Sidebar = ({ isOpen, setIsOpen, isCollapsed, toggleCollapse }) => {
 
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
-    { name: 'Income Ledger', path: '/income', icon: ArrowUpRight },
-    { name: 'Expense Ledger', path: '/expense', icon: ArrowDownRight },
+    { name: 'Income Ledger', path: '/income', icon: ArrowUpRight, ariaLabel: 'Income (debit)', titleAttr: 'Income (debit)' },
+    { name: 'Expense Ledger', path: '/expense', icon: ArrowDownRight, ariaLabel: 'Expense (credit)', titleAttr: 'Expense (credit)' },
     { name: 'Budgets Ledger', path: '/budgeting', icon: PieChart },
     { name: 'Accounts Ledger', path: '/accounts', icon: CreditCard },
     { name: 'EMI Ledger Calc', path: '/emi', icon: Percent },
@@ -63,16 +63,16 @@ const Sidebar = ({ isOpen, setIsOpen, isCollapsed, toggleCollapse }) => {
           {/* Header Zone with Logo & Toggle Button */}
           <div className={`flex items-center justify-between gap-2 ${isCollapsed ? 'lg:flex-col lg:gap-4' : ''}`}>
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-[#A8863C] text-white shadow" title="Ledger Console">
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-[#A8863C] text-white shadow" title="FinIntel Console">
                 <BookOpen className="h-5 w-5 text-[#1F4D3A]" />
               </div>
               {!isCollapsed && (
                 <div className="transition-opacity duration-200">
                   <h1 className="font-serif font-display text-lg font-bold text-white tracking-wide">
-                    Ledger
+                    FinIntel
                   </h1>
                   <p className="text-[9px] text-[#A8863C] font-bold uppercase tracking-widest leading-none">
-                    Double-Entry Console
+                    Intelligent Financial Console
                   </p>
                 </div>
               )}
@@ -105,7 +105,11 @@ const Sidebar = ({ isOpen, setIsOpen, isCollapsed, toggleCollapse }) => {
                 }
               >
                 <div className="flex items-center gap-3">
-                  <item.icon className="h-4 w-4 shrink-0" />
+                  <item.icon 
+                    className="h-4 w-4 shrink-0" 
+                    aria-label={item.ariaLabel} 
+                    title={item.titleAttr} 
+                  />
                   <span className={`font-sans whitespace-nowrap transition-all duration-200 ${isCollapsed ? 'lg:hidden' : 'block'}`}>
                     {item.name}
                   </span>
@@ -129,8 +133,8 @@ const Sidebar = ({ isOpen, setIsOpen, isCollapsed, toggleCollapse }) => {
                 {user.name ? user.name[0].toUpperCase() : 'U'}
               </div>
               <div className={`overflow-hidden transition-all duration-200 ${isCollapsed ? 'lg:hidden' : 'block'}`}>
-                <p className="truncate text-xs font-bold text-white leading-tight">{user.name || 'Ledger User'}</p>
-                <p className="truncate text-[10px] text-[#9AAA9F]">{user.email || 'user@ledger.com'}</p>
+                <p className="truncate text-xs font-bold text-white leading-tight">{user.name || 'FinIntel User'}</p>
+                <p className="truncate text-[10px] text-[#9AAA9F]">{user.email || 'user@finintel.com'}</p>
               </div>
             </div>
           )}

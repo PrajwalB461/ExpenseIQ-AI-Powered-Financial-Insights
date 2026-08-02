@@ -86,10 +86,10 @@ const Login = () => {
             <BookOpen className="h-5.5 w-5.5 text-white" />
           </div>
           <h2 className="font-serif font-display text-3xl font-bold tracking-tight text-ink">
-            Ledger
+            FinIntel
           </h2>
           <p className="mt-1 text-xs text-ink-muted font-bold uppercase tracking-widest leading-none">
-            Double-Entry Console
+            Intelligent Financial Console
           </p>
         </div>
 

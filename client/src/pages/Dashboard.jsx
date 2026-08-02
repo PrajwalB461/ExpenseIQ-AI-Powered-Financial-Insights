@@ -1,23 +1,23 @@
 import React, { useEffect, useState } from 'react';
-import { 
-  TrendingUp, 
-  TrendingDown, 
-  Wallet, 
-  Download, 
-  Sparkles, 
-  Calendar, 
-  Filter, 
-  Tag, 
+import {
+  TrendingUp,
+  TrendingDown,
+  Wallet,
+  Download,
+  Sparkles,
+  Calendar,
+  Filter,
+  Tag,
   Info,
   AlertTriangle
 } from 'lucide-react';
-import { 
-  AreaChart, 
-  Area, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
+import {
+  AreaChart,
+  Area,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   ResponsiveContainer,
   PieChart,
   Pie,
@@ -44,13 +44,13 @@ const Dashboard = () => {
     spendTrend: [],
     topCategories: []
   });
-  
+
   const [insights, setInsights] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
   const [insightsLoading, setInsightsLoading] = useState(true);
   const [error, setError] = useState('');
-  
+
   // Filters presets
   const [preset, setPreset] = useState('this-month');
   const [fromDate, setFromDate] = useState('');
@@ -102,7 +102,7 @@ const Dashboard = () => {
 
   const fetchDashboardData = async () => {
     if (!fromDate || !toDate) return;
-    
+
     setLoading(true);
     setInsightsLoading(true);
     setError('');
@@ -139,10 +139,10 @@ const Dashboard = () => {
       const res = await API.get(`/backup/export${query}`, {
         responseType: 'blob'
       });
-      
+
       const blob = new Blob([res.data], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
       const url = window.URL.createObjectURL(blob);
-      
+
       const link = document.createElement('a');
       link.href = url;
       link.setAttribute('download', `Ledger_Backup_${fromDate}_to_${toDate}.xlsx`);
@@ -172,7 +172,7 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6 text-xs text-ink font-semibold">
-      
+
       {/* Welcome Banner */}
       <LedgerCard className="relative overflow-hidden">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
@@ -182,7 +182,7 @@ const Dashboard = () => {
               Verify book entries, audit monthly categories, and generate strategic bookkeeping insights for the period.
             </p>
           </div>
-          <button 
+          <button
             onClick={handleExport}
             className="flex items-center justify-center gap-2 rounded bg-brand hover:bg-brand-hover text-white px-5 py-2.5 font-bold transition-all cursor-pointer shadow-xs outline-none"
           >
@@ -240,7 +240,7 @@ const Dashboard = () => {
             >
               <option value="">All Categories</option>
               {categories.map((cat) => (
-                <option key={cat._id} value={cat._id}>{cat.name} ({cat.type === 'income' ? 'Debit' : 'Credit'})</option>
+                <option key={cat._id} value={cat._id}>{cat.name} ({cat.type !== 'income' ? 'Debit' : 'Credit'})</option>
               ))}
             </select>
           </div>
@@ -259,9 +259,9 @@ const Dashboard = () => {
         {/* Total Income Inflow Card */}
         <LedgerCard className="h-full flex flex-col justify-between">
           <div className="flex items-start justify-between min-h-[32px] gap-2">
-            <span className="text-[9px] uppercase font-bold text-ink-muted tracking-wider leading-tight line-clamp-2">Debit (Total Income)</span>
-            <span className="h-6 w-6 rounded bg-ink-green/10 flex items-center justify-center text-ink-green border border-ink-green/20 shrink-0">
-              <TrendingUp className="h-3.5 w-3.5" />
+            <span className="text-[9px] uppercase font-bold text-ink-muted tracking-wider leading-tight line-clamp-2">Credit (Total Income)</span>
+            <span className="h-6 w-6 rounded bg-ink-green/10 flex items-center justify-center text-ink-green border border-ink-green/20 shrink-0 font-sans">
+              <TrendingUp className="h-3.5 w-3.5" aria-label="Income (credit)" title="Income (credit)" />
             </span>
           </div>
           <div className="flex-1 flex flex-col justify-end mt-4 border-t border-rule pt-3">
@@ -274,9 +274,9 @@ const Dashboard = () => {
         {/* Total Expense Outflow Card */}
         <LedgerCard className="h-full flex flex-col justify-between">
           <div className="flex items-start justify-between min-h-[32px] gap-2">
-            <span className="text-[9px] uppercase font-bold text-ink-muted tracking-wider leading-tight line-clamp-2">Credit (Total Expenses)</span>
-            <span className="h-6 w-6 rounded bg-ink-red/10 flex items-center justify-center text-ink-red border border-ink-red/20 shrink-0">
-              <TrendingDown className="h-3.5 w-3.5" />
+            <span className="text-[9px] uppercase font-bold text-ink-muted tracking-wider leading-tight line-clamp-2">Debit (Total Expenses)</span>
+            <span className="h-6 w-6 rounded bg-ink-red/10 flex items-center justify-center text-ink-red border border-ink-red/20 shrink-0 font-sans">
+              <TrendingDown className="h-3.5 w-3.5" aria-label="Expense (credit)" title="Expense (credit)" />
             </span>
           </div>
           <div className="flex-1 flex flex-col justify-end mt-4 border-t border-rule pt-3">
@@ -316,46 +316,46 @@ const Dashboard = () => {
                 <AreaChart data={data.spendTrend} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                   <defs>
                     <linearGradient id="spendColor" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="var(--ink-red)" stopOpacity={0.25}/>
-                      <stop offset="95%" stopColor="var(--ink-red)" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="var(--ink-red)" stopOpacity={0.25} />
+                      <stop offset="95%" stopColor="var(--ink-red)" stopOpacity={0} />
                     </linearGradient>
                   </defs>
                   <CartesianGrid strokeDasharray="3 3" stroke="var(--rule)" opacity={0.4} />
-                  <XAxis 
-                    dataKey="date" 
-                    stroke="var(--ink-muted)" 
-                    fontSize={9} 
+                  <XAxis
+                    dataKey="date"
+                    stroke="var(--ink-muted)"
+                    fontSize={9}
                     tickFormatter={formatTrendTick}
                     fontWeight="bold"
-                    tickLine={false} 
-                    axisLine={false} 
+                    tickLine={false}
+                    axisLine={false}
                   />
-                  <YAxis 
-                    stroke="var(--ink-muted)" 
-                    fontSize={10} 
+                  <YAxis
+                    stroke="var(--ink-muted)"
+                    fontSize={10}
                     fontWeight="bold"
-                    tickLine={false} 
-                    axisLine={false} 
+                    tickLine={false}
+                    axisLine={false}
                   />
-                  <Tooltip 
-                    contentStyle={{ 
-                      backgroundColor: 'var(--surface)', 
-                      borderColor: 'var(--rule)', 
+                  <Tooltip
+                    contentStyle={{
+                      backgroundColor: 'var(--surface)',
+                      borderColor: 'var(--rule)',
                       borderRadius: '6px',
                       color: 'var(--ink)',
                       fontSize: '11px',
                       fontWeight: 'bold'
-                    }} 
+                    }}
                     formatter={(value) => [`₹${value.toLocaleString('en-IN')}`, 'Debit Amount']}
                     labelFormatter={formatTrendTick}
                   />
-                  <Area 
-                    type="monotone" 
-                    dataKey="amount" 
-                    stroke="var(--ink-red)" 
-                    strokeWidth={2} 
-                    fillOpacity={1} 
-                    fill="url(#spendColor)" 
+                  <Area
+                    type="monotone"
+                    dataKey="amount"
+                    stroke="var(--ink-red)"
+                    strokeWidth={2}
+                    fillOpacity={1}
+                    fill="url(#spendColor)"
                   />
                 </AreaChart>
               </ResponsiveContainer>
@@ -394,10 +394,10 @@ const Dashboard = () => {
                           <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                         ))}
                       </Pie>
-                      <Tooltip 
-                        contentStyle={{ 
-                          backgroundColor: 'var(--surface)', 
-                          borderColor: 'var(--rule)', 
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: 'var(--surface)',
+                          borderColor: 'var(--rule)',
                           borderRadius: '6px',
                           color: 'var(--ink)',
                           fontSize: '11px',
@@ -408,13 +408,13 @@ const Dashboard = () => {
                     </PieChart>
                   </ResponsiveContainer>
                 </div>
-                
+
                 <div className="flex-1 space-y-2 max-h-56 overflow-y-auto w-full px-2">
                   {data.spendByCategory.map((item, index) => (
                     <div key={item.category} className="flex justify-between items-center gap-2 text-xs border-b border-rule/50 pb-1.5">
                       <div className="flex items-center gap-2">
-                        <span 
-                          className="h-2 w-2 rounded-full shrink-0" 
+                        <span
+                          className="h-2 w-2 rounded-full shrink-0"
                           style={{ backgroundColor: COLORS[index % COLORS.length] }}
                         />
                         <span className="text-ink font-bold truncate max-w-[100px]">{item.category}</span>
@@ -449,7 +449,7 @@ const Dashboard = () => {
               const isAnomaly = insight.includes('Anomaly');
               const isIncrease = insight.includes('increased');
               const isDecrease = insight.includes('decreased') || insight.includes('Great job');
-              
+
               let borderClass = 'border-rule bg-surface';
               let iconColor = 'text-accent-brass';
               if (isAnomaly) {
