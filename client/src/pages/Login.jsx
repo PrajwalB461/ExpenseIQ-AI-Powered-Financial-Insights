@@ -20,8 +20,11 @@ const Login = () => {
   useEffect(() => {
     const verifiedParam = searchParams.get('verified');
     const reasonParam = searchParams.get('reason');
+    const resetParam = searchParams.get('reset');
 
-    if (verifiedParam === 'true') {
+    if (resetParam === 'success') {
+      setVerifiedMsg('Your password has been reset successfully! Please sign in with your new credentials.');
+    } else if (verifiedParam === 'true') {
       setVerifiedMsg('Email address verified successfully! You can now access full system operations.');
     } else if (verifiedParam === 'false' && reasonParam === 'expired') {
       setError('Verification token has expired or is invalid. Please request a new token.');
@@ -123,9 +126,14 @@ const Login = () => {
             </div>
             
             <div>
-              <label htmlFor="password" className="text-ink-muted uppercase tracking-wider block mb-1.5 font-bold">
-                Password
-              </label>
+              <div className="flex justify-between items-center mb-1.5">
+                <label htmlFor="password" className="text-ink-muted uppercase tracking-wider block font-bold">
+                  Password
+                </label>
+                <Link to="/forgot-password" className="text-[10px] text-accent-brass hover:underline uppercase font-bold tracking-wider">
+                  Forgot password?
+                </Link>
+              </div>
               <input
                 id="password"
                 name="password"

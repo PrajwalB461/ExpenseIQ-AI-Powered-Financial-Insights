@@ -9,6 +9,9 @@ import Layout from './components/Layout';
 import Landing from './pages/Landing';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import VerifyOtp from './pages/VerifyOtp';
+import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import Income from './pages/Income';
 import Expense from './pages/Expense';
@@ -31,6 +34,9 @@ function App() {
               <Route path="/" element={<Landing />} />
               <Route path="/login" element={<Login />} />
               <Route path="/register" element={<Register />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/verify-otp" element={<VerifyOtp />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
 
               {/* Protected Main Workspace Routes */}
               <Route

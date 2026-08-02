@@ -6,7 +6,10 @@ import {
   login, 
   logout, 
   getMe, 
-  googleAuthStub 
+  googleAuthStub,
+  forgotPassword,
+  verifyOtp,
+  resetPassword
 } from '../controllers/authController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { validateInput } from '../middleware/validationMiddleware.js';
@@ -55,5 +58,14 @@ router.get('/me', protect, getMe);
 
 // @route   POST /api/v1/auth/google (Stub Placeholder)
 router.post('/google', googleAuthStub);
+
+// @route   POST /api/v1/auth/forgot-password
+router.post('/forgot-password', forgotPassword);
+
+// @route   POST /api/v1/auth/verify-otp
+router.post('/verify-otp', verifyOtp);
+
+// @route   POST /api/v1/auth/reset-password
+router.post('/reset-password', resetPassword);
 
 export default router;

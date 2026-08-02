@@ -63,3 +63,48 @@ export const sendVerificationEmail = async (toEmail, verificationLink) => {
     // We return without throwing to prevent registration from crashing the request flow
   }
 };
+
+/**
+ * Sends a one-time numeric passcode email to the user for password reset.
+ *
+ * @param {string} toEmail - Recipient email Address
+ * @param {string} otp - 6-digit numeric OTP code
+ */
+export const sendOtpEmail = async (toEmail, otp) => {
+  const fromEmail = process.env.RESEND_FROM_EMAIL || 'onboarding@resend.dev';
+  
+  if (!resend) {
+    if (isProd) {
+      console.warn('[SECURITY WARNING] Mail service bypassed! Email api key missing: OTP omitted in prod logs.');
+      return;
+    } else {
+      console.log('\n--- [LOCAL EMAIL SERVICE FALLBACK] ---');
+      console.log(`Sending password reset OTP mail to: ${toEmail}`);
+      console.log(`Your 6-digit one-time passcode: ${otp}`);
+      console.log('--------------------------------------\n');
+      return;
+    }
+  }
+
+  try {
+    await resend.emails.send({
+      from: fromEmail,
+      to: toEmail,
+      subject: 'Reset Password Code - FinIntel AI',
+      html: `
+        <div style="font-family: sans-serif; background-color: #0f172a; color: #f8fafc; padding: 24px; border-radius: 12px; max-width: 600px; margin: 0 auto; border: 1px solid #1e293b;">
+          <h2 style="color: #a78bfa; margin-bottom: 16px;">Password Reset Request</h2>
+          <p style="font-size: 14px; line-height: 1.5; color: #cbd5e1;">A password reset request was initiated for your profile. Please use the following 6-digit one-time passcode to verify your identity. This code will expire in 10 minutes.</p>
+          <div style="margin: 24px 0; text-align: center;">
+            <span style="background-color: #1e293b; color: #38bdf8; font-family: monospace; font-size: 32px; font-weight: bold; letter-spacing: 6px; padding: 12px 32px; border-radius: 8px; display: inline-block; border: 1px solid #334155;">${otp}</span>
+          </div>
+          <p style="font-size: 12px; color: #64748b; margin-top: 24px; border-top: 1px solid #1e293b; padding-top: 16px;">If you did not request this, please secure your profile. Your current password remains active until you verify this OTP and provide a new password.</p>
+        </div>
+      `
+    });
+    console.log(`[Email Service] OTP mail dispatched successfully to ${toEmail}`);
+  } catch (error) {
+    console.error(`[Email Service Error] Failed to send OTP email to ${toEmail}: ${error.message}`);
+  }
+};
+

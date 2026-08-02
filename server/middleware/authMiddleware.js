@@ -1,4 +1,5 @@
 import jwt from 'jsonwebtoken';
+import User from '../models/User.js';
 
 export const protect = async (req, res, next) => {
   let token;
@@ -22,14 +23,27 @@ export const protect = async (req, res, next) => {
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'default_secret_key_for_expense_tracker_ai_2026');
 
-    // Attach decoded user info to request.
-    // For scaffolding, we check if details exist, otherwise attach the payload directly.
-    req.user = {
-      id: decoded.id,
-      email: decoded.email,
-      role: decoded.role || 'user',
-      ...decoded
-    };
+    // Fetch the user from database to check password status
+    const user = await User.findById(decoded.id);
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Not authorized, user profile not found'
+      });
+    }
+
+    // Reject tokens issued before last password change
+    if (user.passwordChangedAt && decoded.iat) {
+      const changedSeconds = Math.floor(user.passwordChangedAt.getTime() / 1000);
+      if (decoded.iat < changedSeconds) {
+        return res.status(401).json({
+          success: false,
+          message: 'Session closed because password was reset. Please log in again.'
+        });
+      }
+    }
+
+    req.user = user; // Attach mongoose model document to request scope
 
     next();
   } catch (error) {
