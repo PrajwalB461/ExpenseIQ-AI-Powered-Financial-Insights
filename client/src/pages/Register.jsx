@@ -4,6 +4,8 @@ import { useAuth } from '../context/AuthContext';
 import { UserPlus, AlertCircle, Sun, Moon, BookOpen } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import LedgerCard from '../components/LedgerCard';
+import StrengthMeter from '../components/StrengthMeter';
+import { validatePassword } from '../utils/passwordPolicy';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -28,8 +30,9 @@ const Register = () => {
       return;
     }
 
-    if (password.length < 6) {
-      setError('Password must contain at least 6 characters.');
+    const pwdErrors = validatePassword(password);
+    if (pwdErrors.length > 0) {
+      setError(pwdErrors.join('\n'));
       return;
     }
 
@@ -84,7 +87,7 @@ const Register = () => {
           {error && (
             <div className="mb-4 flex items-start gap-2.5 rounded border border-danger/20 bg-danger/5 p-3.5 text-xs text-ink-red">
               <AlertCircle className="h-4.5 w-4.5 shrink-0 mt-0.5" />
-              <span className="font-semibold">{error}</span>
+              <span className="font-semibold whitespace-pre-wrap">{error}</span>
             </div>
           )}
 
@@ -154,6 +157,9 @@ const Register = () => {
                 />
               </div>
             </div>
+
+            {/* Password strength meter and policy info layout */}
+            <StrengthMeter password={password} />
 
             <div className="pt-2">
               <button

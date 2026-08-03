@@ -2,6 +2,7 @@ import { Router } from 'express';
 import bcrypt from 'bcryptjs';
 import { protect } from '../middleware/authMiddleware.js';
 import User from '../models/User.js';
+import { validatePassword } from '../utils/passwordPolicy.js';
 
 const router = Router();
 
@@ -45,11 +46,12 @@ router.put('/me', protect, async (req, res, next) => {
         });
       }
 
-      // Verify minimum length check
-      if (password.length < 6) {
+      // Verify password policy
+      const pwdErrors = validatePassword(password);
+      if (pwdErrors.length > 0) {
         return res.status(400).json({
           success: false,
-          message: 'New password must have at least 6 characters.'
+          message: pwdErrors.join(' ')
         });
       }
 

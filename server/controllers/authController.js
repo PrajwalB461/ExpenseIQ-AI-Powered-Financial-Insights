@@ -2,6 +2,7 @@ import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 import { seedDefaultCategories } from '../services/categoryService.js';
+import { validatePassword } from '../utils/passwordPolicy.js';
 
 // @desc    Register a new user
 // @route   POST /api/v1/auth/register
@@ -10,6 +11,15 @@ export const register = async (req, res, next) => {
   const { name, email, password } = req.body;
 
   try {
+    // Validate password policy
+    const pwdErrors = validatePassword(password);
+    if (pwdErrors.length > 0) {
+      return res.status(400).json({
+        success: false,
+        message: pwdErrors.join(' ')
+      });
+    }
+
     // Check if user already exists
     const userExists = await User.findOne({ email: email.toLowerCase().trim() });
     if (userExists) {

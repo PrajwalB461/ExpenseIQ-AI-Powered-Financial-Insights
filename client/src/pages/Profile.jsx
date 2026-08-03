@@ -3,6 +3,8 @@ import { useAuth } from '../context/AuthContext';
 import { User, Key, CheckCircle, ShieldAlert, AlertTriangle, Download, Upload } from 'lucide-react';
 import API from '../api';
 import LedgerCard from '../components/LedgerCard';
+import StrengthMeter from '../components/StrengthMeter';
+import { validatePassword } from '../utils/passwordPolicy';
 
 const Profile = () => {
   const { user, setUser } = useAuth();
@@ -72,6 +74,12 @@ const Profile = () => {
     e.preventDefault();
     setPasswordSuccess('');
     setPasswordError('');
+
+    const pwdErrors = validatePassword(newPassword);
+    if (pwdErrors.length > 0) {
+      setPasswordError(pwdErrors.join('\n'));
+      return;
+    }
 
     if (newPassword !== confirmPassword) {
       setPasswordError('New password and password confirmation do not match.');
@@ -231,8 +239,8 @@ const Profile = () => {
               </div>
             )}
             {passwordError && (
-              <div className="flex items-center gap-2 rounded border border-danger/25 bg-danger/5 p-3 text-ink-red mb-4">
-                <ShieldAlert className="h-4.5 w-4.5" />
+              <div className="flex items-start gap-2 rounded border border-danger/25 bg-danger/5 p-3 text-ink-red mb-4 whitespace-pre-wrap font-semibold">
+                <ShieldAlert className="h-4.5 w-4.5 shrink-0 mt-0.5" />
                 <span>{passwordError}</span>
               </div>
             )}
@@ -271,6 +279,9 @@ const Profile = () => {
                   />
                 </div>
               </div>
+
+              {/* Password strength meter and policy info layout */}
+              <StrengthMeter password={newPassword} />
 
               <button
                 type="submit"
