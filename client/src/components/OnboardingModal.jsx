@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DollarSign, Landmark, Plus, Trash2, ShieldCheck, Check, ArrowRight } from 'lucide-react';
+import { Landmark, Plus, Trash2, ShieldCheck, Check, ArrowRight } from 'lucide-react';
 import API from '../api';
 import { useAuth } from '../context/AuthContext';
 
@@ -65,14 +65,49 @@ const OnboardingModal = ({ isOpen, onClose }) => {
   const handleFinish = async () => {
     setLoading(true);
     setError('');
+
+    // Prepare final accounts payload (handling implicit unsaved fields)
+    const finalAccounts = [...accounts];
+    const hasName = !!String(accForm.name || '').trim();
+    const hasBalance = !!String(accForm.balance || '').trim();
+    const isPartialInput = (hasName || hasBalance) && (!hasName || !hasBalance);
+
+    if (isPartialInput) {
+      setLoading(false);
+      if (!hasName) {
+        setError('Please fill in Account Label.');
+      } else {
+        setError('Please fill in Opening Balance / Cap.');
+      }
+      return;
+    }
+
+    if (hasName && hasBalance) {
+      // Validate card numbers security checks
+      const isSensitive = /\b\d{4}[- ]?\d{4}[- ]?\d{4}[- ]?\d{4}\b|\b\d{15,16}\b/.test(accForm.name);
+      if (isSensitive) {
+        setLoading(false);
+        setError('For security, please only enter card labels (e.g. "Amex Gold Card") instead of digits.');
+        return;
+      }
+      finalAccounts.push({
+        id: Date.now().toString(),
+        name: accForm.name.trim(),
+        type: accForm.type,
+        balance: parseFloat(accForm.balance)
+      });
+    }
+
     try {
+      console.log('Outgoing Onboarding monthlyIncome is:', monthlyIncome);
+      
       // 1. Log income to user profile details if entered
       if (monthlyIncome && Number(monthlyIncome) > 0) {
         await API.put('/users/me', { monthlyIncome: parseFloat(monthlyIncome) });
       }
       
       // 2. Loop and hit account creation endpoint
-      for (const account of accounts) {
+      for (const account of finalAccounts) {
         // Enforce credit_card underscore standardization
         const payloadType = account.type === 'credit card' ? 'credit_card' : account.type;
         
@@ -86,7 +121,13 @@ const OnboardingModal = ({ isOpen, onClose }) => {
       
       // 3. Mark hasCompletedOnboarding as true in the database
       await API.post('/users/complete-onboarding');
-      setUser(prev => ({ ...prev, hasCompletedOnboarding: true }));
+      
+      // Update local state context object
+      setUser(prev => ({ 
+        ...prev, 
+        hasCompletedOnboarding: true,
+        monthlyIncome: monthlyIncome ? parseFloat(monthlyIncome) : (prev?.monthlyIncome || 0)
+      }));
       onClose();
     } catch (err) {
       console.error('Onboarding setup failed:', err.response?.data?.message || err.message);
@@ -123,14 +164,14 @@ const OnboardingModal = ({ isOpen, onClose }) => {
             <div>
               <label className="text-ink-muted uppercase tracking-widest text-[10px] block mb-2 font-bold">Estimated Monthly Income</label>
               <div className="relative mt-1">
-                <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-ink-muted">
-                  <DollarSign className="h-4.5 w-4.5" />
+                <div className="absolute inset-y-0 left-0 flex items-center pl-3.5 pointer-events-none text-ink-muted text-sm font-sans font-bold select-none">
+                  ₹
                 </div>
                 <input
                   type="number"
                   value={monthlyIncome}
                   onChange={(e) => setMonthlyIncome(e.target.value)}
-                  className="pl-10 pr-4 py-3 block w-full rounded border border-rule bg-bg text-ink focus:border-brand focus:outline-none transition-all placeholder-slate-650 text-sm font-semibold"
+                  className="pl-8 pr-4 py-3 block w-full rounded border border-rule bg-bg text-ink focus:border-brand focus:outline-none transition-all placeholder-slate-650 text-sm font-semibold"
                   placeholder="e.g. 5000"
                 />
               </div>
@@ -233,7 +274,7 @@ const OnboardingModal = ({ isOpen, onClose }) => {
                       <span className="ml-2 lowercase text-ink-muted">({acc.type})</span>
                     </div>
                     <div className="flex items-center gap-3">
-                      <span className="font-mono text-ink font-bold">${acc.balance}</span>
+                      <span className="font-mono text-ink font-bold">₹{acc.balance}</span>
                       <button 
                         onClick={() => handleRemoveAccount(acc.id)}
                         className="text-ink-muted hover:text-ink-red"
@@ -254,7 +295,7 @@ const OnboardingModal = ({ isOpen, onClose }) => {
             <div className="flex justify-between items-center pt-4 border-t border-rule">
               <button 
                 onClick={() => setStep(1)}
-                className="text-ink-muted hover:text-ink transition-colors cursor-pointer text-xs"
+                className="text-ink-muted hover:text-ink transition-colors cursor-pointer text-xs font-bold"
               >
                 Back
               </button>

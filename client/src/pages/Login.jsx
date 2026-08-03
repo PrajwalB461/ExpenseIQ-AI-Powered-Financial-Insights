@@ -33,18 +33,6 @@ const Login = () => {
     }
   };
 
-  const handleDemoSignIn = async () => {
-    setError('');
-    setIsLoading(true);
-    try {
-      await login('demo@expensetracker.ai', 'demo123');
-      navigate('/dashboard');
-    } catch (err) {
-      setError('Demo session connection failed.');
-    } finally {
-      setIsLoading(false);
-    }
-  };
 
   return (
     <div className="relative flex min-h-screen flex-col items-center justify-center bg-bg text-ink px-4 py-12 transition-colors">
@@ -136,14 +124,7 @@ const Login = () => {
                 )}
               </button>
 
-              <button
-                type="button"
-                onClick={handleDemoSignIn}
-                disabled={isLoading}
-                className="w-full flex items-center justify-center gap-2 rounded border border-rule bg-surface py-3 text-xs font-bold text-ink hover:bg-bg transition-colors cursor-pointer outline-none"
-              >
-                Log In with Sandbox Demo
-              </button>
+
             </div>
           </form>
         </LedgerCard>

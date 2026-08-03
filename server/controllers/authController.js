@@ -69,6 +69,7 @@ export const register = async (req, res, next) => {
           name: user.name,
           email: user.email,
           authProvider: user.authProvider,
+          monthlyIncome: user.monthlyIncome,
           hasCompletedOnboarding: user.hasCompletedOnboarding
         }
       }
@@ -135,6 +136,7 @@ export const login = async (req, res, next) => {
           name: user.name,
           email: user.email,
           authProvider: user.authProvider,
+          monthlyIncome: user.monthlyIncome,
           hasCompletedOnboarding: user.hasCompletedOnboarding
         }
       }
