@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link, useSearchParams } from 'react-router-dom';
+import React, { useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogIn, AlertCircle, CheckCircle2, Sun, Moon, BookOpen } from 'lucide-react';
+import { LogIn, AlertCircle, Sun, Moon, BookOpen } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import LedgerCard from '../components/LedgerCard';
 
@@ -9,27 +9,11 @@ const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [verifiedMsg, setVerifiedMsg] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+
   const { login } = useAuth();
   const { theme, toggleTheme } = useTheme();
-  
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-
-  useEffect(() => {
-    const verifiedParam = searchParams.get('verified');
-    const reasonParam = searchParams.get('reason');
-    const resetParam = searchParams.get('reset');
-
-    if (resetParam === 'success') {
-      setVerifiedMsg('Your password has been reset successfully! Please sign in with your new credentials.');
-    } else if (verifiedParam === 'true') {
-      setVerifiedMsg('Email address verified successfully! You can now access full system operations.');
-    } else if (verifiedParam === 'false' && reasonParam === 'expired') {
-      setError('Verification token has expired or is invalid. Please request a new token.');
-    }
-  }, [searchParams]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -94,17 +78,10 @@ const Login = () => {
         </div>
 
         <LedgerCard className="p-6">
-          {verifiedMsg && (
-            <div className="mb-4 flex items-start gap-2.5 rounded border border-ink-green/20 bg-ink-green/5 p-3.5 text-xs text-ink-green">
-              <CheckCircle2 className="h-4.5 w-4.5 shrink-0 mt-0.5" />
-              <span className="font-semibold">{verifiedMsg}</span>
-            </div>
-          )}
-
           {error && (
-            <div className="mb-4 flex items-start gap-2.5 rounded border border-danger/20 bg-danger/5 p-3.5 text-xs text-ink-red">
+            <div className="mb-4 flex items-start gap-2.5 rounded border border-danger/20 bg-danger/5 p-3.5 text-xs text-ink-red font-semibold">
               <AlertCircle className="h-4.5 w-4.5 shrink-0 mt-0.5" />
-              <span className="font-semibold">{error}</span>
+              <span>{error}</span>
             </div>
           )}
 
@@ -126,13 +103,10 @@ const Login = () => {
             </div>
             
             <div>
-              <div className="flex justify-between items-center mb-1.5">
+              <div className="mb-1.5">
                 <label htmlFor="password" className="text-ink-muted uppercase tracking-wider block font-bold">
                   Password
                 </label>
-                <Link to="/forgot-password" className="text-[10px] text-accent-brass hover:underline uppercase font-bold tracking-wider">
-                  Forgot password?
-                </Link>
               </div>
               <input
                 id="password"

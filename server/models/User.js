@@ -21,38 +21,21 @@ const userSchema = new mongoose.Schema({
     },
     select: false,
   },
-  isEmailVerified: {
-    type: Boolean,
-    default: false,
-  },
   authProvider: {
     type: String,
     enum: ['local', 'google'],
     default: 'local',
   },
-  verificationToken: {
-    type: String,
-  },
-  verificationTokenExpires: {
-    type: Date,
-  },
   monthlyIncome: {
-    type: Number,
-    default: 0,
-  },
-  otpHash: {
-    type: String,
-    select: false,
-  },
-  otpExpiresAt: {
-    type: Date,
-  },
-  otpAttempts: {
     type: Number,
     default: 0,
   },
   passwordChangedAt: {
     type: Date,
+  },
+  hasCompletedOnboarding: {
+    type: Boolean,
+    default: false,
   },
   createdAt: {
     type: Date,

@@ -49,12 +49,9 @@ export const AuthProvider = ({ children }) => {
     setLoading(true);
     try {
       const res = await API.post('/auth/register', { name, email, password });
-      if (res.data?.success) {
-        // According to acceptance criteria, the user can log in even before verifying email.
-        // Let's log them in automatically after registration by making a login request or setting local state!
-        // The endpoint register returns user details. Let's log in immediately after registration by calling login:
-        const loginRes = await login(email, password);
-        return { success: true, user: loginRes.user, message: res.data.data.message };
+      if (res.data?.success && res.data.data?.user) {
+        setUser(res.data.data.user);
+        return { success: true, user: res.data.data.user };
       }
       throw new Error(res.data?.message || 'Registration failed');
     } catch (error) {

@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext';
 import { UserPlus, AlertCircle, Sun, Moon, BookOpen } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import LedgerCard from '../components/LedgerCard';
-import OnboardingModal from '../components/OnboardingModal';
 
 const Register = () => {
   const [name, setName] = useState('');
@@ -14,7 +13,6 @@ const Register = () => {
   
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [showOnboarding, setShowOnboarding] = useState(false);
   
   const { register } = useAuth();
   const { theme, toggleTheme } = useTheme();
@@ -43,7 +41,7 @@ const Register = () => {
     setIsLoading(true);
     try {
       await register(name, email, password);
-      setShowOnboarding(true);
+      navigate('/dashboard');
     } catch (err) {
       setError(err.response?.data?.message || 'Registration failed. Please audit input credentials.');
     } finally {
@@ -183,14 +181,6 @@ const Register = () => {
           </Link>
         </p>
       </div>
-
-      <OnboardingModal 
-        isOpen={showOnboarding} 
-        onClose={() => {
-          setShowOnboarding(false);
-          navigate('/dashboard');
-        }} 
-      />
     </div>
   );
 };

@@ -2,14 +2,10 @@ import { Router } from 'express';
 import { body } from 'express-validator';
 import { 
   register, 
-  verifyEmail, 
   login, 
   logout, 
   getMe, 
-  googleAuthStub,
-  forgotPassword,
-  verifyOtp,
-  resetPassword
+  googleAuthStub
 } from '../controllers/authController.js';
 import { protect } from '../middleware/authMiddleware.js';
 import { validateInput } from '../middleware/validationMiddleware.js';
@@ -44,9 +40,6 @@ const loginValidation = [
 // @route   POST /api/v1/auth/register
 router.post('/register', registerValidation, validateInput, register);
 
-// @route   GET /api/v1/auth/verify-email/:token
-router.get('/verify-email/:token', verifyEmail);
-
 // @route   POST /api/v1/auth/login
 router.post('/login', loginValidation, validateInput, login);
 
@@ -58,14 +51,5 @@ router.get('/me', protect, getMe);
 
 // @route   POST /api/v1/auth/google (Stub Placeholder)
 router.post('/google', googleAuthStub);
-
-// @route   POST /api/v1/auth/forgot-password
-router.post('/forgot-password', forgotPassword);
-
-// @route   POST /api/v1/auth/verify-otp
-router.post('/verify-otp', verifyOtp);
-
-// @route   POST /api/v1/auth/reset-password
-router.post('/reset-password', resetPassword);
 
 export default router;

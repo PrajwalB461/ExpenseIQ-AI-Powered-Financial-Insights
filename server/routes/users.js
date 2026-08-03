@@ -66,6 +66,10 @@ router.put('/me', protect, async (req, res, next) => {
       user.monthlyIncome = parseFloat(monthlyIncome) || 0;
     }
 
+    if (req.body.hasCompletedOnboarding !== undefined) {
+      user.hasCompletedOnboarding = req.body.hasCompletedOnboarding === true;
+    }
+
     await user.save();
 
     res.status(200).json({
@@ -75,10 +79,36 @@ router.put('/me', protect, async (req, res, next) => {
         id: user._id,
         name: user.name,
         email: user.email,
-        monthlyIncome: user.monthlyIncome
+        monthlyIncome: user.monthlyIncome,
+        hasCompletedOnboarding: user.hasCompletedOnboarding
       }
     });
 
+  } catch (error) {
+    next(error);
+  }
+});
+
+// @route   POST /api/v1/users/complete-onboarding
+// @access  Private
+router.post('/complete-onboarding', protect, async (req, res, next) => {
+  try {
+    const user = await User.findById(req.user.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+    user.hasCompletedOnboarding = true;
+    await user.save();
+    return res.status(200).json({
+      success: true,
+      message: 'Financial onboarding status marked as complete.',
+      data: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        hasCompletedOnboarding: user.hasCompletedOnboarding
+      }
+    });
   } catch (error) {
     next(error);
   }

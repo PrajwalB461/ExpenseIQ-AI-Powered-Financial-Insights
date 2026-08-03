@@ -75,8 +75,6 @@ A state-of-the-art MERN (MongoDB, Express, React, Node.js) financial management 
    # Optional Integrations (If omitted, features degrade gracefully)
    GROQ_API_KEY=your-groq-key-here
    GROQ_MODEL=llama3-8b-8192
-   RESEND_API_KEY=re-resend-key-here
-   RESEND_FROM_EMAIL=onboarding@resend.dev
    ```
 4. Fire up the API development server:
    ```bash
@@ -107,6 +105,6 @@ A state-of-the-art MERN (MongoDB, Express, React, Node.js) financial management 
 
 ## Features & Scaffolding Flow
 
-- **Health Check Engine**: Dynamic verification dashboard querying `/api/v1/health`. Shows whether secondary key features (Groq, Resend) are connected or run under safe sandbox fallback modes.
+- **Health Check Engine**: Dynamic verification dashboard querying `/api/v1/health`. Shows whether secondary key features (Groq) are connected or run under safe sandbox fallback modes.
 - **Persistent Shell Layout**: The header displays real-time connection telemetry to the node server alongside a collapsing sidebar containing navigation items.
 - **Mock Authenticator**: Allows entering sandbox page paths using the "Access Demo Workspace" instant login trigger, bypassing DB connections during early local setup.

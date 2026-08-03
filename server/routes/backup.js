@@ -25,15 +25,38 @@ router.get('/export', async (req, res, next) => {
   const userId = req.user.id;
 
   try {
-    // 1. Retrieve all data
-    const [accounts, categories, incomes, expenses, budgets, emis] = await Promise.all([
-      Account.find({ userId }),
-      Category.find({ $or: [{ userId }, { isDefault: true }] }),
-      Income.find({ userId }).populate('accountId categoryId'),
-      Expense.find({ userId }).populate('accountId categoryId'),
-      Budget.find({ userId }).populate('categoryId'),
-      EMI.find({ userId }).populate('linkedAccountId')
-    ]);
+    // 1. Retrieve all data with explicit individual queries and error handling
+    let accounts, categories, incomes, expenses, budgets, emis;
+    try {
+      accounts = await Account.find({ userId });
+    } catch (err) {
+      return res.status(500).json({ success: false, message: `Failed to retrieve Accounts collection: ${err.message}` });
+    }
+    try {
+      categories = await Category.find({ $or: [{ userId }, { isDefault: true }] });
+    } catch (err) {
+      return res.status(500).json({ success: false, message: `Failed to retrieve Categories collection: ${err.message}` });
+    }
+    try {
+      incomes = await Income.find({ userId }).populate('accountId categoryId');
+    } catch (err) {
+      return res.status(500).json({ success: false, message: `Failed to retrieve Incomes collection: ${err.message}` });
+    }
+    try {
+      expenses = await Expense.find({ userId }).populate('accountId categoryId');
+    } catch (err) {
+      return res.status(500).json({ success: false, message: `Failed to retrieve Expenses collection: ${err.message}` });
+    }
+    try {
+      budgets = await Budget.find({ userId }).populate('categoryId');
+    } catch (err) {
+      return res.status(500).json({ success: false, message: `Failed to retrieve Budgets collection: ${err.message}` });
+    }
+    try {
+      emis = await EMI.find({ userId }).populate('linkedAccountId');
+    } catch (err) {
+      return res.status(500).json({ success: false, message: `Failed to retrieve EMIs collection: ${err.message}` });
+    }
 
     // 2. Format for XLSX
     const accountsData = accounts.map(a => ({
@@ -152,8 +175,8 @@ router.post('/restore', async (req, res, next) => {
       });
     }
 
-    // 1. Verify required worksheets
-    const requiredSheets = ['Accounts', 'Categories', 'Incomes', 'Expenses', 'Budgets', 'EMIs'];
+    // 1. Verify required worksheets (flexible check supporting singular/plural forms)
+    const requiredSheets = ['Accounts', 'Categories', 'Budgets', 'EMIs'];
     for (const sheetName of requiredSheets) {
       if (!wb.SheetNames.includes(sheetName)) {
         return res.status(400).json({
@@ -163,11 +186,27 @@ router.post('/restore', async (req, res, next) => {
       }
     }
 
+    const incomesSheetName = wb.SheetNames.find(name => name === 'Incomes' || name === 'Income');
+    if (!incomesSheetName) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation Error: Missing required worksheet named "Incomes" or "Income".'
+      });
+    }
+
+    const expensesSheetName = wb.SheetNames.find(name => name === 'Expenses' || name === 'Expense');
+    if (!expensesSheetName) {
+      return res.status(400).json({
+        success: false,
+        message: 'Validation Error: Missing required worksheet named "Expenses" or "Expense".'
+      });
+    }
+
     // 2. Parse worksheets
     const accountsRows = XLSX.utils.sheet_to_json(wb.Sheets['Accounts']);
     const categoriesRows = XLSX.utils.sheet_to_json(wb.Sheets['Categories']);
-    const incomesRows = XLSX.utils.sheet_to_json(wb.Sheets['Incomes']);
-    const expensesRows = XLSX.utils.sheet_to_json(wb.Sheets['Expenses']);
+    const incomesRows = XLSX.utils.sheet_to_json(wb.Sheets[incomesSheetName]);
+    const expensesRows = XLSX.utils.sheet_to_json(wb.Sheets[expensesSheetName]);
     const budgetsRows = XLSX.utils.sheet_to_json(wb.Sheets['Budgets']);
     const emisRows = XLSX.utils.sheet_to_json(wb.Sheets['EMIs']);
 
@@ -245,7 +284,7 @@ router.post('/restore', async (req, res, next) => {
         await rollback();
         return res.status(400).json({
           success: false,
-          message: `Validation Error on sheet [Incomes] line ${lineNum}: Missing Account, Category, Amount or Date.`
+          message: `Validation Error on sheet [${incomesSheetName}] line ${lineNum}: Missing Account, Category, Amount or Date.`
         });
       }
 
@@ -254,7 +293,7 @@ router.post('/restore', async (req, res, next) => {
         await rollback();
         return res.status(400).json({
           success: false,
-          message: `Validation Error on sheet [Incomes] line ${lineNum}: Account "${row.Account}" has no matching definition in Accounts tab.`
+          message: `Validation Error on sheet [${incomesSheetName}] line ${lineNum}: Account "${row.Account}" has no matching definition in Accounts tab.`
         });
       }
 
@@ -263,7 +302,7 @@ router.post('/restore', async (req, res, next) => {
         await rollback();
         return res.status(400).json({
           success: false,
-          message: `Validation Error on sheet [Incomes] line ${lineNum}: Category "${row.Category}" has no matching definition in Categories tab.`
+          message: `Validation Error on sheet [${incomesSheetName}] line ${lineNum}: Category "${row.Category}" has no matching definition in Categories tab.`
         });
       }
 
@@ -272,7 +311,7 @@ router.post('/restore', async (req, res, next) => {
         await rollback();
         return res.status(400).json({
           success: false,
-          message: `Validation Error on sheet [Incomes] line ${lineNum}: Amount must be a positive integer/float value.`
+          message: `Validation Error on sheet [${incomesSheetName}] line ${lineNum}: Amount must be a positive integer/float value.`
         });
       }
 
@@ -296,7 +335,7 @@ router.post('/restore', async (req, res, next) => {
         await rollback();
         return res.status(400).json({
           success: false,
-          message: `Validation Error on sheet [Expenses] line ${lineNum}: Missing Account, Category, Amount or Date.`
+          message: `Validation Error on sheet [${expensesSheetName}] line ${lineNum}: Missing Account, Category, Amount or Date.`
         });
       }
 
@@ -305,7 +344,7 @@ router.post('/restore', async (req, res, next) => {
         await rollback();
         return res.status(400).json({
           success: false,
-          message: `Validation Error on sheet [Expenses] line ${lineNum}: Account "${row.Account}" has no matching definition in Accounts tab.`
+          message: `Validation Error on sheet [${expensesSheetName}] line ${lineNum}: Account "${row.Account}" has no matching definition in Accounts tab.`
         });
       }
 
@@ -314,7 +353,7 @@ router.post('/restore', async (req, res, next) => {
         await rollback();
         return res.status(400).json({
           success: false,
-          message: `Validation Error on sheet [Expenses] line ${lineNum}: Category "${row.Category}" has no matching definition in Categories tab.`
+          message: `Validation Error on sheet [${expensesSheetName}] line ${lineNum}: Category "${row.Category}" has no matching definition in Categories tab.`
         });
       }
 
@@ -323,7 +362,7 @@ router.post('/restore', async (req, res, next) => {
         await rollback();
         return res.status(400).json({
           success: false,
-          message: `Validation Error on sheet [Expenses] line ${lineNum}: Amount must be a positive number.`
+          message: `Validation Error on sheet [${expensesSheetName}] line ${lineNum}: Amount must be a positive number.`
         });
       }
 

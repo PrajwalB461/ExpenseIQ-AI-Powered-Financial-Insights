@@ -26,6 +26,8 @@ import {
 import API from '../api';
 import LedgerCard from '../components/LedgerCard';
 import DateInput from '../components/DateInput';
+import { useAuth } from '../context/AuthContext';
+import OnboardingModal from '../components/OnboardingModal';
 
 const COLORS = [
   'var(--brand)',
@@ -37,6 +39,7 @@ const COLORS = [
 ];
 
 const Dashboard = () => {
+  const { user } = useAuth();
   const [data, setData] = useState({
     totalIncome: 0,
     totalExpense: 0,
@@ -480,6 +483,10 @@ const Dashboard = () => {
         )}
       </LedgerCard>
 
+      <OnboardingModal
+        isOpen={!!(user && !user.hasCompletedOnboarding)}
+        onClose={() => {}}
+      />
     </div>
   );
 };

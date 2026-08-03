@@ -97,9 +97,6 @@ const server = app.listen(PORT, () => {
   if (!process.env.GROQ_API_KEY) {
     console.log('[Info] GROQ_API_KEY is not defined. AI functionality will degrade gracefully.');
   }
-  if (!process.env.RESEND_API_KEY) {
-    console.log('[Info] RESEND_API_KEY is not defined. Verification emails will degrade gracefully.');
-  }
 });
 
 export default app;
