@@ -5,20 +5,20 @@ A MERN-based double-entry ledger bookkeeping system featuring smart real-time pa
 ---
 
 ## 📋 Table of Contents
-- [Project Overview](#project-overview)
-- [Features](#features)
-- [Screenshots](#screenshots)
-- [Architecture](#architecture)
-- [Project Structure](#project-structure)
-- [Workflow](#workflow)
-- [Technology Stack](#technology-stack)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Configuration](#configuration)
-- [Folder Explanation](#folder-explanation)
-- [Contribution Guide](#contribution-guide)
-- [License](#license)
-- [Author](#author)
+- [Project Overview](#-project-overview)
+- [Features](#-features)
+- [Screenshots](#-screenshots)
+- [Architecture](#-architecture)
+- [Project Structure](#-project-structure)
+- [Workflow](#-workflow)
+- [Technology Stack](#-technology-stack)
+- [Installation](#-installation)
+- [Usage](#-usage)
+- [Configuration](#-configuration)
+- [Folder Explanation](#-folder-explanation)
+- [Contribution Guide](#-contribution-guide)
+- [License](#-license)
+- [Author](#-author)
 
 ---
 
