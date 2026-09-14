@@ -19,8 +19,8 @@ const accountCreationValidation = [
     .notEmpty()
     .withMessage('Account name is required'),
   body('type')
-    .isIn(['bank', 'cash', 'wallet', 'credit_card'])
-    .withMessage('Account type must be one of bank, cash, wallet, or credit_card'),
+    .isIn(['bank', 'cash', 'NotebookPen', 'credit_card'])
+    .withMessage('Account type must be one of bank, cash, NotebookPen, or credit_card'),
   body('balance')
     .optional()
     .isFloat()

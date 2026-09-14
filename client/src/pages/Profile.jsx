@@ -112,7 +112,7 @@ const Profile = () => {
       const downloadUrl = window.URL.createObjectURL(new Blob([res.data]));
       const link = document.createElement('a');
       link.href = downloadUrl;
-      link.setAttribute('download', `${user?.name || 'finintel'}_backup_${new Date().toISOString().split('T')[0]}.xlsx`);
+      link.setAttribute('download', `${user?.name || 'ExpenseIQ'}_backup_${new Date().toISOString().split('T')[0]}.xlsx`);
       document.body.appendChild(link);
       link.click();
       link.remove();

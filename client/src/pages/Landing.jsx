@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Wallet, Sparkles, TrendingUp, ShieldCheck, ArrowRight } from 'lucide-react';
+import { NotebookPen, Sparkles, TrendingUp, ShieldCheck, ArrowRight } from 'lucide-react';
 
 const Landing = () => {
   const { isAuthenticated } = useAuth();
@@ -15,11 +15,13 @@ const Landing = () => {
       <header className="relative z-10 max-w-7xl w-full mx-auto px-6 h-20 flex items-center justify-between border-b border-slate-900 bg-slate-950/40 backdrop-blur-md">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 bg-gradient-to-tr from-violet-600 to-indigo-650 rounded-xl flex items-center justify-center text-white shadow-lg">
-            <Wallet className="h-5 w-5" />
+            <NotebookPen className="h-5 w-5" />
           </div>
           <div>
-            <span className="text-lg font-black tracking-tight bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">FinIntel AI</span>
-            <span className="block text-[9px] text-violet-400 font-bold uppercase tracking-widest mt-0.5">Autonomous Wealth Deck</span>
+            <span className="text-lg font-black tracking-tight bg-gradient-to-r from-white to-slate-300 bg-clip-text text-transparent">ExpenseIQ AI</span>
+            <span className="block text-[9px] text-violet-400 font-bold uppercase tracking-widest mt-0.5">
+            AI Powered Financial Insights
+          </span>
           </div>
         </div>
 
@@ -54,12 +56,12 @@ const Landing = () => {
         </div>
 
         <h1 className="text-4xl md:text-6xl font-black tracking-tight text-white leading-tight">
-          Autonomous Expense Tracking <br className="hidden sm:inline" />
-          Powered by <span className="bg-gradient-to-r from-violet-450 via-violet-400 to-cyan-400 bg-clip-text text-transparent">Financial Intelligence</span>
+          Smart Financial Expense<br className="hidden sm:inline" />
+          Tracker By Prajwal
         </h1>
 
         <p className="text-base md:text-lg text-slate-400 max-w-2xl leading-relaxed">
-          FinIntel AI connects your banking categories, loan EMIs, and utility bounds under a integrated analytics console. Get predictive restructuring logs powered by Groq LLMs.
+          ExpenseIQ AI connects your banking categories, loan EMIs, and utility bounds under a integrated analytics console. Get predictive restructuring logs powered by Groq LLMs.
         </p>
 
         {/* CTA Buttons */}
@@ -126,7 +128,7 @@ const Landing = () => {
 
       {/* Footer */}
       <footer className="border-t border-slate-900 py-8 text-center text-xs text-slate-655 relative z-10 text-slate-500">
-        &copy; {new Date().getFullYear()} FinIntel AI MERN Space. MIT License.
+        &copy; {new Date().getFullYear()} ExpenseIQ AI MERN Space. MIT License.
       </footer>
     </div>
   );

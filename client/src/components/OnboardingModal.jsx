@@ -250,7 +250,7 @@ const OnboardingModal = ({ isOpen, onClose }) => {
                   >
                     <option value="bank">Bank / Checking</option>
                     <option value="cash">Cash / Liquid</option>
-                    <option value="wallet">Digital Wallet</option>
+                    <option value="NotebookPen">Digital Wallet</option>
                     <option value="credit_card">Credit Card</option>
                   </select>
                 </div>

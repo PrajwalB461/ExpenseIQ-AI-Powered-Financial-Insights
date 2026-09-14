@@ -12,7 +12,7 @@ Rules:
 4. Keep it concise.`;
 
 // Chat assistant grounding system instructions
-const getChatSystemPrompt = (financialContext) => `You are FinIntel AI, an autonomous financial intelligence reasoning agent.
+const getChatSystemPrompt = (financialContext) => `You are ExpenseIQ AI, an autonomous financial intelligence reasoning agent.
 You are grounding your answers strictly inside the user's micro-financial details.
 Here is the user's current financial context data:
 ${JSON.stringify(financialContext, null, 2)}

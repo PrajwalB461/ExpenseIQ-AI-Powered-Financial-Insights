@@ -11,10 +11,10 @@ import {
   Sparkles, 
   User, 
   LogOut, 
-  BookOpen,
+  NotebookPen,
   ChevronLeft,
   ChevronRight
-} from 'lucide-react';
+}  from 'lucide-react';
 
 const Sidebar = ({ isOpen, setIsOpen, isCollapsed, toggleCollapse }) => {
   const { logout, user } = useAuth();
@@ -63,16 +63,16 @@ const Sidebar = ({ isOpen, setIsOpen, isCollapsed, toggleCollapse }) => {
           {/* Header Zone with Logo & Toggle Button */}
           <div className={`flex items-center justify-between gap-2 ${isCollapsed ? 'lg:flex-col lg:gap-4' : ''}`}>
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-[#A8863C] text-white shadow" title="FinIntel Console">
-                <BookOpen className="h-5 w-5 text-[#1F4D3A]" />
+              <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded bg-[#A8863C] text-white shadow" title="ExpenseIQ">
+                <NotebookPen className="h-5 w-5 text-[#1F4D3A]" />
               </div>
               {!isCollapsed && (
                 <div className="transition-opacity duration-200">
                   <h1 className="font-serif font-display text-lg font-bold text-white tracking-wide">
-                    FinIntel
+                    ExpenseIQ
                   </h1>
                   <p className="text-[9px] text-[#A8863C] font-bold uppercase tracking-widest leading-none">
-                    Intelligent Financial Console
+                   AI Powered Financial Insights
                   </p>
                 </div>
               )}
@@ -133,8 +133,8 @@ const Sidebar = ({ isOpen, setIsOpen, isCollapsed, toggleCollapse }) => {
                 {user.name ? user.name[0].toUpperCase() : 'U'}
               </div>
               <div className={`overflow-hidden transition-all duration-200 ${isCollapsed ? 'lg:hidden' : 'block'}`}>
-                <p className="truncate text-xs font-bold text-white leading-tight">{user.name || 'FinIntel User'}</p>
-                <p className="truncate text-[10px] text-[#9AAA9F]">{user.email || 'user@finintel.com'}</p>
+                <p className="truncate text-xs font-bold text-white leading-tight">{user.name || 'ExpenseIQ User'}</p>
+                <p className="truncate text-[10px] text-[#9AAA9F]">{user.email || 'user@expenseiq.com'}</p>
               </div>
             </div>
           )}

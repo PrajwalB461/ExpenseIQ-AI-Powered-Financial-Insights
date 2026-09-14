@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { LogIn, AlertCircle, Sun, Moon, BookOpen } from 'lucide-react';
+import { LogIn, AlertCircle, Sun, Moon,NotebookPen} from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import LedgerCard from '../components/LedgerCard';
 
@@ -53,15 +53,16 @@ const Login = () => {
       </div>
 
       <div className="w-full max-w-md space-y-6">
+
         <div className="flex flex-col items-center justify-center text-center">
           <div className="flex h-11 w-11 items-center justify-center rounded bg-brand text-white shadow-sm mb-4">
-            <BookOpen className="h-5.5 w-5.5 text-white" />
+            <NotebookPen className="h-6 w-6 text-white" />
           </div>
           <h2 className="font-serif font-display text-3xl font-bold tracking-tight text-ink">
-            FinIntel
+            ExpenseIQ
           </h2>
           <p className="mt-1 text-xs text-ink-muted font-bold uppercase tracking-widest leading-none">
-            Intelligent Financial Console
+            AI Powered Financial Insights
           </p>
         </div>
 

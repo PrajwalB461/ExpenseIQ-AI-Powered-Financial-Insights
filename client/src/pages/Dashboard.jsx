@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import {
   TrendingUp,
   TrendingDown,
-  Wallet,
+  NotebookPen,
   Download,
   Sparkles,
   Calendar,
@@ -293,7 +293,7 @@ const Dashboard = () => {
           <div className="flex items-start justify-between min-h-[32px] gap-2">
             <span className="text-[9px] uppercase font-bold text-ink-muted tracking-wider leading-tight line-clamp-2">Net Balance Surplus</span>
             <span className="h-6 w-6 rounded bg-accent-brass/10 flex items-center justify-center text-accent-brass border border-accent-brass/20 shrink-0">
-              <Wallet className="h-3.5 w-3.5" />
+              <NotebookPen className="h-3.5 w-3.5" />
             </span>
           </div>
           <div className="flex-1 flex flex-col justify-end mt-4 border-t border-rule pt-3">
@@ -440,7 +440,9 @@ const Dashboard = () => {
       </div>
 
       {/* AI STRATEGIC FINANCIAL INSIGHTS */}
-      <LedgerCard title="Strategic Audit Analysis Alerts" subtitle="Autonomous Ledger Verification Feed">
+      <LedgerCard title="Strategic Audit Analysis Alerts" subtitle="
+      
+      Ledger Verification Feed">
         {insightsLoading ? (
           <div className="py-6 flex justify-center items-center">
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-brand border-t-transparent" />

@@ -15,8 +15,8 @@ const accountSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Please specify the account type'],
     enum: {
-      values: ['bank', 'cash', 'wallet', 'credit_card'],
-      message: 'Account type must be either bank, cash, wallet, or credit_card'
+      values: ['bank', 'cash', 'NotebookPen', 'credit_card'],
+      message: 'Account type must be either bank, cash, NotebookPen, or credit_card'
     }
   },
   balance: {

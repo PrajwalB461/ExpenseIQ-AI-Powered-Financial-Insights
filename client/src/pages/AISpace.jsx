@@ -9,7 +9,7 @@ const AISpace = () => {
     {
       id: 'welcome',
       role: 'assistant',
-      content: 'Hello! I am FinIntel AI, your bookkeeping reasoning agent. I have immediate grounding access to your accounts, budgets, EMIs, and category logs. Ask me questions like: "Can I afford a car loan of ₹30,000 monthly?" or "Summarize my current budgets."'
+      content: 'Hello! I am ExpenseIQ AI, your bookkeeping reasoning agent. I have immediate grounding access to your accounts, budgets, EMIs, and category logs. Ask me questions like: "Can I afford a car loan of ₹30,000 monthly?" or "Summarize my current budgets."'
     }
   ]);
   const [input, setInput] = useState('');

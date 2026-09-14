@@ -257,7 +257,7 @@ export const exportDashboardData = async (req, res, next) => {
 
     const worksheet = XLSX.utils.aoa_to_sheet([headerRow, ...fileRows]);
     const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "FinIntel Transactions");
+    XLSX.utils.book_append_sheet(workbook, worksheet, "ExpenseIQ Transactions");
 
     const excelBuffer = XLSX.write(workbook, { type: 'buffer', bookType: 'xlsx' });
 

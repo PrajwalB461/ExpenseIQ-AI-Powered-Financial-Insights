@@ -5,7 +5,7 @@ const ThemeContext = createContext(null);
 export const ThemeProvider = ({ children }) => {
   const [theme, setTheme] = useState(() => {
     // Synchronize to the index.html bootloader setup
-    const stored = localStorage.getItem('finintel-theme');
+    const stored = localStorage.getItem('ExpenseIQ-theme');
     if (stored) return stored;
     const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
     return prefersDark ? 'ledger-night' : 'ledger-day';
@@ -13,7 +13,7 @@ export const ThemeProvider = ({ children }) => {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    localStorage.setItem('finintel-theme', theme);
+    localStorage.setItem('ExpenseIQ-theme', theme);
   }, [theme]);
 
   const toggleTheme = () => {

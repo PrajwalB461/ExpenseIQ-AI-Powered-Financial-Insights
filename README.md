@@ -1,4 +1,4 @@
-# FinIntel AI — Autonomous MERN Stack Expense Tracker & Ledger Console
+# ExpenseIQ — Autonomous MERN Stack Expense Tracker & Ledger Console
 
 A MERN-based double-entry ledger bookkeeping system featuring smart real-time password checkers, currency-specific onboarding, and integrated AI-driven budget modeling.
 
@@ -24,10 +24,10 @@ A MERN-based double-entry ledger bookkeeping system featuring smart real-time pa
 
 ## 🔍 Project Overview
 
-FinIntel AI is a financial management platform designed under a vintage **"Ledger Book"** design system. Drawing layout cues from paper-based double-entry books, it translates raw tracking into structured financial sheets.
+ExpenseIQ AI is a financial management platform designed under a vintage **"Ledger Book"** design system. Drawing layout cues from paper-based double-entry books, it translates raw tracking into structured financial sheets.
 
 ### Why it Exists & What it Solves
-Typical expense trackers are generic, using colorful, gamified, circular progress bars and confusing tags. FinIntel AI re-introduces the core concepts of standard engineering bookkeeping:
+Typical expense trackers are generic, using colorful, gamified, circular progress bars and confusing tags. ExpenseIQ re-introduces the core concepts of standard engineering bookkeeping:
 * **The Problem**: Lack of visibility into real category limits, fragmented bank balances database schemas, weak registration password policies, and generic AI mock systems.
 * **The Solution**: An integrated double-entry register built on strict ink-based layouts, real-time client/server password strength validation metrics, currency matching (rupee `₹`), and automated category analytics.
 * **Who it is for**: Developers, financial engineers, self-bookkeepers, and enthusiasts seeking an advanced, clean, and private MERN dashboard.
@@ -125,7 +125,7 @@ Tree layout describing root, backend routes, React views, components state hooks
 
 ```mermaid
 mindmap
-  root((FinIntel AI))
+  root((ExpenseIQ))
     server
       controllers
       middleware
@@ -243,7 +243,7 @@ flowchart LR
 
 ## 💡 Usage
 
-### How to Navigate & Run FinIntel AI:
+### How to Navigate & Run ExpenseIQ:
 
 #### Registering
 * Navigate to register page.
@@ -289,7 +289,7 @@ GROQ_MODEL=llama-3.3-70b-versatile
 
 ## 🤝 Contribution Guide
 
-We appreciate contributions to FinIntel AI. To contribute:
+We appreciate contributions to ExpenseIQ. To contribute:
 1. **Fork the Repository**: Create a personal copy of the repository.
 2. **Branch Config**: Create a clean feature branch:
    ```bash

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { UserPlus, AlertCircle, Sun, Moon, BookOpen } from 'lucide-react';
+import { UserPlus, AlertCircle, Sun, Moon, NotebookPen} from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
 import LedgerCard from '../components/LedgerCard';
 import StrengthMeter from '../components/StrengthMeter';
@@ -73,13 +73,13 @@ const Register = () => {
       <div className="w-full max-w-md space-y-6">
         <div className="flex flex-col items-center justify-center text-center">
           <div className="flex h-11 w-11 items-center justify-center rounded bg-brand text-white shadow-sm mb-4">
-            <BookOpen className="h-5.5 w-5.5 text-white" />
+            <NotebookPen className="h-5.5 w-5.5 text-white" />
           </div>
           <h2 className="font-serif font-display text-3xl font-bold tracking-tight text-ink">
-            FinIntel
+            ExpenseIQ
           </h2>
           <p className="mt-1 text-xs text-ink-muted font-bold uppercase tracking-widest leading-none">
-            Register New Account
+            AI Powered Financial Insights
           </p>
         </div>
 

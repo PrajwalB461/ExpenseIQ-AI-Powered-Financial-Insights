@@ -119,7 +119,7 @@ router.get('/export', async (req, res, next) => {
     const excelBuffer = XLSX.write(wb, { type: 'buffer', bookType: 'xlsx' });
 
     res.setHeader('Content-Type', 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    res.setHeader('Content-Disposition', 'attachment; filename=finintel_backup.xlsx');
+    res.setHeader('Content-Disposition', 'attachment; filename=expenseiq_backup.xlsx');
     res.send(excelBuffer);
 
   } catch (error) {
